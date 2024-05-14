@@ -1,0 +1,4 @@
+name: Grimoires
+version: '${project.version}'
+main: net.maksy.grimoires.Grimoires
+api-version: '1.20'

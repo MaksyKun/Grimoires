@@ -1,0 +1,34 @@
+SQL:
+  Type: Locale
+  Host: "localhost"
+  Port: "3306"
+  Database: "database"
+  Username: "root"
+  Password: "password"
+
+Storage:
+  DisplayTitle: "&8Books %name%"
+  FolderIcon:
+    GenreTitle: "&2&l✦ Genre: &a%genre%"
+    PlayerTitle: "&2&l✦ %player%'s &aBooks"
+    Lore: []
+  BookIcon:
+    Title: "&9%title%"
+    ConsumerLore:
+      - "&7Author: &a%author%"
+      - "&7Published: &a%published%"
+      - "&7Published on: &a%date%"
+    AuthorLore:
+      - "&7Author: &a%author%"
+      - "&7Published: &a%published%"
+      - "&7Published on: &a%date%"
+      - " "
+      - "%edit%"
+      - "%delete%"
+    EditFormat: "&a✎ Shift + Left-Click to edit"
+    DeleteFormat: "&4&lX &cShift + Right-Click to delete"
+
+
+# Prevent players to edit their books once they have published them
+PreventReworking: true
+PreventReworkingMessage: "&cYou cannot edit this book once it's published!"
