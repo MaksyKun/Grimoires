@@ -5,10 +5,15 @@ import net.kyori.adventure.text.Component;
 import net.maksy.grimoires.utils.ChatUT;
 import org.bukkit.Bukkit;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
-public class Grimoire {
+public class Grimoire implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private final int id;
     private List<UUID> authors;
@@ -17,13 +22,16 @@ public class Grimoire {
     private List<Genre> genres;
     private List<String> pages;
 
-    public Grimoire(int id, List<UUID> authors, String title, String description, List<Genre> genres, List<String> pages) {
+    private long publishedOn;
+
+    public Grimoire(int id, List<UUID> authors, String title, String description, List<Genre> genres, List<String> pages, long publishedOn) {
         this.id = id;
         this.authors = authors;
         this.title = title;
         this.description = description;
         this.genres = genres;
         this.pages = pages;
+        this.publishedOn = publishedOn;
     }
 
     public int getId() {
@@ -68,6 +76,14 @@ public class Grimoire {
 
     public void setPages(List<String> pages) {
         this.pages = pages;
+    }
+
+    public long getPublishedOn() {
+        return publishedOn;
+    }
+
+    public void setPublishedOn(long publishedOn) {
+        this.publishedOn = publishedOn;
     }
 
     public Book getBook() {

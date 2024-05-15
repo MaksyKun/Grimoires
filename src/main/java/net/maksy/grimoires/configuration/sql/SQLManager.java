@@ -20,10 +20,11 @@ public class SQLManager {
     private static final String password = config.getSQLPassword();
     private static final int port = config.getSQLPort();
 
-
+    private final BooksSQL booksSQL;
 
     public SQLManager() {
         connect();
+        booksSQL = new BooksSQL(dataSource);
     }
 
     public void connect() {
@@ -47,4 +48,7 @@ public class SQLManager {
         }
     }
 
+    public BooksSQL getBooksSQL() {
+        return booksSQL;
+    }
 }

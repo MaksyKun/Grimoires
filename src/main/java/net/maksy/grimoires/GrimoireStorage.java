@@ -27,6 +27,7 @@ public class GrimoireStorage implements Listener {
         this.inventories = new ArrayList<>();
         this.mainDisplay = Grimoires.getConfigManager().getMainItemFolderTitle("");
         Grimoires.registerListener(this);
+        initialize();
     }
 
     public GrimoireStorage(UUID uuid) {
@@ -34,6 +35,7 @@ public class GrimoireStorage implements Listener {
         this.inventories = new ArrayList<>();
         this.mainDisplay = Grimoires.getConfigManager().getMainItemFolderTitle(Bukkit.getOfflinePlayer(uuid).getName());
         Grimoires.registerListener(this);
+        initialize();
     }
 
     public GrimoireStorage(Genre genre) {
@@ -41,6 +43,7 @@ public class GrimoireStorage implements Listener {
         this.inventories = new ArrayList<>();
         this.mainDisplay = Grimoires.getConfigManager().getMainItemFolderTitle(genre.getName());
         Grimoires.registerListener(this);
+        initialize();
     }
 
     public GrimoireStorage(UUID uuid, Genre genre) {
@@ -49,22 +52,19 @@ public class GrimoireStorage implements Listener {
         this.inventories = new ArrayList<>();
         this.mainDisplay = Grimoires.getConfigManager().getMainItemFolderTitle(Bukkit.getOfflinePlayer(uuid).getName() + " - " + genre.getName());
         Grimoires.registerListener(this);
+        initialize();
     }
 
     public void initialize() {
+        List<Grimoire> books = Grimoires.sql().getBooksSQL().getBooks(null, null);
         if (this.selectedUUID != null && this.selectedGenre != null) {
-            // Filter on Players specific books to a genre
 
         } else if (this.selectedUUID != null) {
-            // Filter on Players specific books
-            CachedGenreStorage.put(this.selectedGenre.getName(), this);
+
         } else if (this.selectedGenre != null) {
-            // Filter on Genre specific books for all players
-            CachedAuthorStorage.put(this.selectedUUID, this);
+
         } else {
-            // All books
-            CachedGenreStorage.put(this.selectedGenre.getName(), this);
-            CachedAuthorStorage.put(this.selectedUUID, this);
+
         }
     }
 

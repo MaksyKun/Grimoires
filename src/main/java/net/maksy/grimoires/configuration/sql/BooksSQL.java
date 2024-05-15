@@ -5,6 +5,7 @@ import net.maksy.grimoires.Genre;
 import net.maksy.grimoires.Grimoire;
 import org.bukkit.Bukkit;
 
+import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +23,7 @@ public class BooksSQL {
             Connection connection = dataSource.getConnection();
             connection.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE + "("
                             + "Id numeric PRIMARY KEY,"
-                            + "Book blob,"
-                            + "Published bool,"
-                            + "PublishedOn numeric,"
-                            + "Authors varchar(1000),"
-                            + "Genres varchar(500));")
+                            + "Book blob);")
                     .execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -43,24 +40,16 @@ public class BooksSQL {
         return 0;
     }
 
-    public void addBook(Grimoire book, boolean published) {
-        String authorsString = book.getAuthors().stream().map(UUID::toString).reduce((a, b) -> a + "," + b).orElse("");
-        String genresString = book.getGenres().stream().map(Genre::getId).reduce((a, b) -> a + "," + b).orElse("");
+    public void addBook(Grimoire book) {
         if(book.getId() > -1) {
-            updateBook(book, published, authorsString, genresString);
+            updateBook(book);
             return;
         }
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement insert = connection.prepareStatement("INSERT INTO " + TABLE + " VALUES(?, ?, ?, ?, ?, ?)")) {
+             PreparedStatement insert = connection.prepareStatement("INSERT INTO " + TABLE + " VALUES(?, ?)")) {
             insert.setLong(1, getBookCount());
             // Add the Grimoire variable book as a blob than can be parsed back later
-            Blob newB = connection.createBlob();
-            newB.setBytes(1, book.toString().getBytes());
-            insert.setBlob(2, newB);
-            insert.setBoolean(3, published);
-            insert.setLong(4, published ? System.currentTimeMillis() : -1);
-            insert.setString(5, authorsString);
-            insert.setString(6, genresString);
+            insert.setBytes(2, serializeObject(book));
             insert.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -78,18 +67,12 @@ public class BooksSQL {
         }
     }
 
-    public void updateBook(Grimoire book, boolean published, String authors, String genres) {
+    public void updateBook(Grimoire book) {
         if(book == null || book.getId() == -1) return;
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement update = connection.prepareStatement("UPDATE " + TABLE + " SET Book=?, Published=?, PublishedOn=?, Authors=?, Genres=? WHERE Id=?")) {
-            Blob newB = connection.createBlob();
-            newB.setBytes(1, book.toString().getBytes());
-            update.setBlob(1, newB);
-            update.setBoolean(2, published);
-            update.setLong(3, published ? System.currentTimeMillis() : -1);
-            update.setString(4, authors);
-            update.setString(5, genres);
-            update.setInt(6, book.getId());
+             PreparedStatement update = connection.prepareStatement("UPDATE " + TABLE + " SET Book=? WHERE Id=?")) {
+            update.setBytes(1, serializeObject(book));
+            update.setInt(2, book.getId());
             update.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -97,44 +80,85 @@ public class BooksSQL {
     }
 
     public List<Grimoire> getBooks(Genre genre, UUID author) {
-        StringBuilder whereClause = new StringBuilder();
-        if(genre != null || author != null) {
-            whereClause.append("WHERE ");
-            // If both are not null, append both to the where clause through joins of the BookAuthorsSQL and BookGenresSQL tables.
-            // Else If genre is not null, append the genre to the where clause.
-            // Else, author is not null, append the author to the where clause.
-            if (genre != null && author != null) whereClause.append("Genre LIKE '%").append(genre.getName()).append("%' AND Author LIKE '%").append(author).append("%'");
-            else if (genre != null) whereClause.append("Genre LIKE '%").append(genre.getName()).append("%'");
-            else whereClause.append("Author LIKE '%").append(author).append("%'");
-        }
-
         List<Grimoire> books = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement select = connection.prepareStatement("SELECT * FROM " + TABLE + " " + whereClause)) {
+             PreparedStatement select = connection.prepareStatement("SELECT * FROM " + TABLE)) {
             ResultSet result = select.executeQuery();
             while (result.next()) {
                 books.add(parseBook(result));
             }
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
-        return null;
+
+        if(genre != null || author != null) {
+            if (genre != null && author != null) {
+                books.forEach(book -> {
+                    if(!book.getGenres().contains(genre) || !book.getAuthors().contains(author)) {
+                        books.remove(book);
+                    }
+                });
+            }
+            else if (genre != null) {
+                books.forEach(book -> {
+                    if(!book.getGenres().contains(genre)) {
+                        books.remove(book);
+                    }
+                });
+            }
+            else {
+                books.forEach(book -> {
+                    if(!book.getAuthors().contains(author)) {
+                        books.remove(book);
+                    }
+                });
+            }
+        }
+        return books;
     }
 
-    public Grimoire parseBook(ResultSet result) {
-        try {
-            Blob bookBlob = result.getBlob("Book");
-            byte[] bookBytes = bookBlob.getBytes(1, (int) bookBlob.length());
-            Grimoire book = Grimoire.fromString(new String(bookBytes));
-
-            book.setId(result.getInt("Id"));
-            book.setAuthors(List.of(result.getString("Authors").split(",").stream().map(UUID::fromString).collect(Collectors.toList()));
-            book.setGenres(List.of(result.getString("Genres").split(",").stream().map(Genre::fromId).collect(Collectors.toList()));
-            return book;
+    public Grimoire getBook(int id) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement select = connection.prepareStatement("SELECT * FROM " + TABLE + " WHERE Id=?")) {
+            select.setInt(1, id);
+            ResultSet result = select.executeQuery();
+            if (result.next()) {
+                return parseBook(result);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    public Grimoire parseBook(ResultSet result) {
+        try {
+            byte[] bookBytes = result.getBytes("Book");
+            return (Grimoire) deserializeObject(bookBytes);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public byte[] serializeObject(Object obj) {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(obj);
+            return baos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Object deserializeObject(byte[] data) {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(data);
+             ObjectInputStream ois = new ObjectInputStream(bais)) {
+            return ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
