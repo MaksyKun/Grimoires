@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.configuration.sql.DatabaseType;
 import net.maksy.grimoires.utils.ChatUT;
+import org.bukkit.event.block.Action;
 
 public class Config {
 
@@ -35,6 +36,22 @@ public class Config {
 
     public int getSQLPort() {
         return config.getInt("SQL.Port");
+    }
+
+    /* Chiseled Bookshelf Gui*/
+    public boolean isChiseledBookshelfGuiEnabled() {
+        return config.getBoolean("ChiseledBookShelfGui.Enabled", true);
+    }
+
+    public Component getChiseledBookshelfGuiTitle() {
+        return ChatUT.hexComp(config.getString("ChiseledBookShelfGui.Title", "Books"));
+    }
+    public boolean requiresBookshelfSneaking() {
+        return config.getBoolean("ChiseledBookShelfGui.SneakingRequired", true);
+    }
+
+    public Action getBookshelfAction() {
+        return Action.valueOf(config.getString("ChiseledBookShelfGui.Action", "RIGHT_CLICK_BLOCK").toUpperCase());
     }
 
     /* Storage */

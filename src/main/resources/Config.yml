@@ -6,6 +6,16 @@ SQL:
   Username: "root"
   Password: "password"
 
+# Opening a custom gui for books instead of the vanilla mechanic for chiseled bookshelves
+ChiseledBookShelfGui:
+  Enabled: true
+  Title: "Books"
+  # The request if the player needs to sneak while opening the gui
+  # The opposite means, how the player is able to take books out of the shelf
+  SneakingRequired: true
+  ActionRequired: RIGHT_CLICK_BLOCK
+
+
 Storage:
   DisplayTitle: "&8Books %name%"
   FolderIcon:
@@ -32,3 +42,4 @@ Storage:
 # Prevent players to edit their books once they have published them
 PreventReworking: true
 PreventReworkingMessage: "&cYou cannot edit this book once it's published!"
+
