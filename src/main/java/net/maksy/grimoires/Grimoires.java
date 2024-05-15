@@ -2,6 +2,7 @@ package net.maksy.grimoires;
 
 import net.maksy.grimoires.commands.GrimoireCommand;
 import net.maksy.grimoires.configuration.Config;
+import net.maksy.grimoires.configuration.GenreCfg;
 import net.maksy.grimoires.configuration.sql.SQLManager;
 import net.maksy.grimoires.viewer.BookViewer;
 import org.bukkit.command.CommandExecutor;
@@ -15,12 +16,14 @@ public final class Grimoires extends JavaPlugin {
     private static JavaPlugin instance;
 
     private static Config config;
+    private static GenreCfg genreCfg;
     private static SQLManager sql;
 
     @Override
     public void onEnable() {
         instance = this;
         config = new Config();
+        genreCfg = new GenreCfg();
         sql = new SQLManager();
         registerListener(new BookViewer());
         registerCommand(new GrimoireCommand());
@@ -45,6 +48,10 @@ public final class Grimoires extends JavaPlugin {
 
     public static Config getConfigManager() {
         return config;
+    }
+
+    public static GenreCfg getGenreCfg() {
+        return genreCfg;
     }
 
     public static SQLManager sql() {

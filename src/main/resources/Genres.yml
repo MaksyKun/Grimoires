@@ -1,4 +1,5 @@
-Adventure:
-  Title: "&2Adventure"
-  Icon: "BOOK"
-  Description: "&7Books that will take you on an adventure!"
+DefaultGenre: Others
+Genres:
+  Others:
+    Name: "Others"
+    Description: "Books that have no genre or are not classified in any genre yet."
