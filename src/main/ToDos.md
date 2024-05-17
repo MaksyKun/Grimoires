@@ -10,3 +10,7 @@
 - [ ] An API to use Listeners for the plugin and create own stuff in your plugins
 - [ ] Proper documentation for Permissions, Commands, Functionalities and API
 - [ ] Soft-Dependend Addons for MythicCraft, Fabled & MagicSpells for custom books functions
+
+
+## Finished
+N/A
