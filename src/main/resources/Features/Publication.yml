@@ -1,0 +1,73 @@
+MainGUI:
+  Title: "Your publication"
+  Icons:
+    Book:
+      Material: "WRITTEN_BOOK"
+      Title: "&9Publication"
+      Lore:
+        - "&7Title: &a%title%"
+        - "&7Authors: &a%authors%"
+        - "&7Genres: &a%genres%"
+    Pricing:
+      Material: "EMERALD"
+      Title: "&9Pricing"
+      Lore:
+        - "&7Publication costs: &a%price%"
+        - "&7&oClick here to publish your book"
+    Authors:
+      Material: "FEATHER"
+      Title: "&9Authors"
+      Lore:
+        - "&7Manage the authors of this book"
+    Genres:
+      Material: "BOOK"
+      Title: "&9Genre"
+      Lore:
+        - "&7Manage the genres of this book"
+
+SubGUI:
+  Authors:
+    # Authors can only be added by the player when they are near him
+    # It requires two parameters:
+    # - 'Distance:' - The distance in blocks players need to be near
+    # - 'CheckInterval:' - The interval the gui updates in seconds
+    Distance: 20
+    CheckInterval: 5
+    Title: "Authors"
+    Icons:
+      Add:
+        Material: "FEATHER"
+        Title: "&aAdd author"
+        Lore:
+          - "&7&oClick here to add an author"
+      Author:
+        Title: "&9%name%"
+        Lore:
+          - "&7Right click to remove author"
+  Genres:
+    Title: "Genres"
+    Icons:
+      Add:
+        Material: "WRITABLE_BOOK"
+        Title: "&aAdd genre"
+        Lore:
+          - "&7&oClick here to add a genre"
+      Genre:
+        Material: "BOOK"
+        Title: "&9%name%"
+        Lore:
+          - "&7Right click to remove genre"
+
+# Enables pricing for publishing books. If 'false', the player can publish books for free
+# The pricing can be staged on the amount of pages
+# If you want a static price, just use:
+# PageStages:
+#   100: <price> - This will set the price for 100 pages and all underneath
+# Requires Vault to be installed
+Pricing:
+  Enabled: true
+  PageStages:
+    25: 250
+    50: 500
+    75: 750
+    100: 1000

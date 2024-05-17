@@ -24,7 +24,7 @@ public class HookManager {
                         VaultHook.hook();
                         break;
                 }
-                Grimoires.consoleMessage(ChatUT.hexComp("&&[Grimoires] &aHooked: &7" + hook));
+                Grimoires.consoleMessage(ChatUT.hexComp("&6[Grimoires] &aHooked: &7" + hook));
             }
         }
     }

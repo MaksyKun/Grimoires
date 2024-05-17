@@ -7,6 +7,7 @@ import net.maksy.grimoires.modules.storage.Grimoire;
 import net.maksy.grimoires.modules.storage.GrimoireRegistry;
 import net.maksy.grimoires.modules.storage.GrimoireStorage;
 import net.maksy.grimoires.Grimoires;
+import net.maksy.grimoires.modules.storage.publication.PublicationEditor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -38,25 +39,24 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
 
         if(args.length == 1) {
             switch (args[0]) {
-                case "savebook":
+                case "savebook" -> {
                     ItemStack item = player.getInventory().getItemInMainHand();
                     if (item.getItemMeta() instanceof BookMeta book) {
-                        if(GrimoireRegistry.isGrimoireExistent(player.getUniqueId(), book.getTitle())) {
+                        if (GrimoireRegistry.isGrimoireExistent(player.getUniqueId(), book.getTitle())) {
                             Translation.Publication_BookAlreadyPublished.sendMessage(player);
                             return true;
                         }
                         Grimoire grimoire = new Grimoire(-1, List.of(player.getUniqueId()), book.getTitle(), " ", List.of(), book.pages().stream().map(Serializer::serialize).toList(), System.currentTimeMillis());
-                        Grimoires.sql().getBooksSQL().addBook(grimoire);
+                        new PublicationEditor(player, grimoire).open();
+                        /*Grimoires.sql().getBooksSQL().addBook(grimoire);
                         GrimoireRegistry.updateRegistry();
-                        Translation.Publication_BookPublished.sendMessage(player, new Replaceable("%title%", book.getTitle()));
+                        Translation.Publication_BookPublished.sendMessage(player, new Replaceable("%title%", book.getTitle()));*/
                     }
-                    break;
-                case "show":
-                    new GrimoireStorage().open(player);
-                    break;
-                default:
-                    // TODO help message
-                    break;
+                }
+                case "show" -> new GrimoireStorage().open(player);
+                default -> {
+                }
+                // TODO help message
             }
         } else if(args.length == 2 && args[0].equals("get")) {
             try {

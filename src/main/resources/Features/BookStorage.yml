@@ -1,0 +1,33 @@
+Storage:
+  Enabled: true
+  DisplayTitle: "&8Books %name%"
+  DateTimeFormat: "dd/MM/yyyy HH:mm:ss"
+  ZoneId: "UTC"
+  Status:
+    True: "&a&l✔"
+    False: "&4&l✘"
+    Unpublished: "&7Unpublished"
+  Icons:
+    Folder:
+      Material: BOOK
+      GenreTitle: "&2&l✦ Genre: &a%genre%"
+      Lore: []
+    Book:
+      Material: "WRITTEN_BOOK"
+      Title: "&9Title: &b%title%"
+      Lore:
+        - "&7Authors: &a%authors%"
+        - "&7Published on: &a%date%"
+      EditFormat: "&a✎ Shift + Left-Click to edit"
+      DeleteFormat: "&4&lX &cShift + Right-Click to delete"
+
+
+# Opening a custom gui for books instead of the vanilla mechanic for chiseled bookshelves
+ChiseledBookShelfGui:
+  Enabled: true
+  Title: "Books"
+  # A request if the player needs to sneak while opening the gui
+  # The opposite means, how the player is able to take books out of the shelf instead
+  # Example - SneakingRequired: false -> Not sneaking opens the gui, sneaking takes the book out
+  SneakingRequired: false
+  ActionRequired: RIGHT_CLICK_BLOCK

@@ -1,5 +1,6 @@
-package net.maksy.grimoires.configuration;
+package net.maksy.grimoires.modules.storage;
 
+import net.maksy.grimoires.configuration.YamlParser;
 import net.maksy.grimoires.modules.storage.Genre;
 import net.maksy.grimoires.Grimoires;
 
@@ -13,7 +14,7 @@ public class GenreCfg {
     private final YamlParser config;
 
     public GenreCfg() {
-        this.config = YamlParser.loadOrExtract(Grimoires.getInstance(), "Genres.yml");
+        this.config = YamlParser.loadOrExtract(Grimoires.getInstance(), "Features/Genres.yml");
         loadGenres();
     }
 

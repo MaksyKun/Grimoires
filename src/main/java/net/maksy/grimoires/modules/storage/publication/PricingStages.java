@@ -25,7 +25,7 @@ public class PricingStages {
         Pricing.add(Pair.of(pages, price));
     }
 
-    private double getPrice(int pages) {
+    public double getPrice(int pages) {
         if(!enabled)
             return 0;
 

@@ -4,7 +4,7 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.maksy.grimoires.commands.GrimoireCommand;
 import net.maksy.grimoires.configuration.Config;
-import net.maksy.grimoires.configuration.GenreCfg;
+import net.maksy.grimoires.modules.storage.GenreCfg;
 import net.maksy.grimoires.configuration.sql.SQLManager;
 import net.maksy.grimoires.configuration.translation.TranslationConfig;
 import net.maksy.grimoires.hooks.HookManager;

@@ -5,13 +5,16 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.hooks.HeadDatabaseHook;
 import net.maksy.grimoires.hooks.HookType;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ItemUT {
 
@@ -39,9 +42,17 @@ public class ItemUT {
         return item;
     }
 
+    public static ItemStack getSkull(UUID uuid, Component name, List<Component> lore) {
+        ItemStack item = getItem(Material.PLAYER_HEAD, name, false, lore);
+        SkullMeta itemMeta = (SkullMeta) item.getItemMeta();
+        itemMeta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
+        item.setItemMeta(itemMeta);
+        return item;
+    }
+
     public static ItemStack getHead(String headID, Component name, List<Component> lore) {
         ItemStack item;
-        if(Grimoires.getHookManager().isHooked(HookType.HeadDatabase)) {
+        if(!Grimoires.getHookManager().isHooked(HookType.HeadDatabase)) {
             item = new ItemStack(Material.PLAYER_HEAD, 1);
         } else {
             item = HeadDatabaseHook.HeadDatabaseAPI.getItemHead(headID);

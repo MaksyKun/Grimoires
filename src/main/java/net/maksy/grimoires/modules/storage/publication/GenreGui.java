@@ -2,8 +2,7 @@ package net.maksy.grimoires.modules.storage.publication;
 
 import net.kyori.adventure.text.Component;
 import net.maksy.grimoires.Grimoires;
-import net.maksy.grimoires.modules.storage.Grimoire;
-import net.maksy.grimoires.modules.storage.GrimoireStorage;
+import net.maksy.grimoires.modules.storage.Genre;
 import net.maksy.grimoires.utils.InventoryUT;
 import net.maksy.grimoires.utils.ItemUT;
 import org.bukkit.Material;
@@ -18,36 +17,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class AuthorGui implements Listener {
+public class GenreGui implements Listener {
 
     private PublicationEditor editor;
 
-    public List<UUID> authors;
+    public List<Genre> genres;
     private final Component title;
     private List<Inventory> inventories;
 
-    private final HashMap<Inventory, HashMap<Integer, UUID>> slots = new HashMap<>();
+    private final HashMap<Inventory, HashMap<Integer, Genre>> slots = new HashMap<>();
 
-    public AuthorGui(PublicationEditor editor, List<UUID> initialAuthors) {
+    public GenreGui(PublicationEditor editor, List<Genre> initialGenres) {
         this.editor = editor;
-        this.authors = new ArrayList<>(initialAuthors);
+        this.genres = new ArrayList<>(initialGenres);
         this.title = Grimoires.getConfiguration().getPublicationAuthorsTitle();
         inventories = List.of(InventoryUT.createFilledInventory(null, title, 45, Material.GRAY_STAINED_GLASS_PANE));
         Grimoires.registerListener(this);
     }
 
-    public List<UUID> getAuthors() {
-        return authors;
+    public List<Genre> getGenres() {
+        return genres;
     }
 
-    public void addAuthor(UUID author) {
-        if(authors.contains(author)) return;
-        authors.add(author);
+    public void addGenre(Genre genre) {
+        genres.add(genre);
     }
 
-    public void removeAuthor(UUID author) {
-        if(author.equals(editor.getPlayer().getUniqueId())) return;
-        authors.remove(author);
+    public void removeGenre(Genre genre) {
+        genres.remove(genre);
     }
 
     public void open(Player player) {
@@ -61,28 +58,28 @@ public class AuthorGui implements Listener {
 
     private void initialize() {
         slots.clear();
-        HashMap<Integer, UUID> invSlots = new HashMap<>();
+        HashMap<Integer, Genre> invSlots = new HashMap<>();
         List<Inventory> inventories = new ArrayList<>();
         Inventory inv = null;
 
-        for (int i = 0; i < authors.size(); i++) {
+        for (int i = 0; i < genres.size(); i++) {
             int invDex = i % 27 + 9;
             if (invDex == 9) {
                 if (inv != null)
                     inventories.add(inv);
                 inv = InventoryUT.createFilledInventory(null, title, 45, Material.GRAY_STAINED_GLASS_PANE);
-                inv.setItem(4, Grimoires.getConfiguration().getPublicationAuthorAddIcon());
+                inv.setItem(4, Grimoires.getConfiguration().getPublicationGenreAddIcon());
                 inv.setItem(36, ItemUT.backItem);
                 inv.setItem(39, ItemUT.previousPageItem);
                 inv.setItem(41, ItemUT.nextPageItem);
                 invSlots = new HashMap<>();
             }
-            if (authors.get(i) == null)
+            if (genres.get(i) == null)
                 break;
-            UUID entry = authors.get(i);
+            Genre entry = genres.get(i);
             invSlots.put(invDex, entry);
             slots.put(inv, invSlots);
-            inv.setItem(invDex, Grimoires.getConfiguration().getPublicationAuthorIcon(entry));
+            inv.setItem(invDex, Grimoires.getConfiguration().getPublicationGenreGuiGenreIcon(entry));
         }
 
         if(inv != null) {
@@ -96,7 +93,6 @@ public class AuthorGui implements Listener {
             _inv.setItem(41, ItemUT.nextPageItem);
             inventories.add(_inv);
         }
-
         this.inventories = inventories;
     }
 
@@ -115,8 +111,8 @@ public class AuthorGui implements Listener {
             default -> {
                 if (!slots.isEmpty() && slots.get(inventories.get(invdex)).get(slot) != null) {
                     if(event.isRightClick()) {
-                        UUID entry = slots.get(inventories.get(invdex)).get(slot);
-                        removeAuthor(entry);
+                        Genre entry = slots.get(inventories.get(invdex)).get(slot);
+                        removeGenre(entry);
                         open(player);
                     }
                 }

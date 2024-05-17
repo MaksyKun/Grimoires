@@ -90,7 +90,7 @@ public class GrimoireRegistry {
         return false;
     }
 
-    public PricingStages pricing() {
+    public static PricingStages pricing() {
         return pricingStages;
     }
 }

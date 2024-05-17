@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -118,5 +119,10 @@ public class ChatUT {
         List<String> entries = new ArrayList<>();
         Bukkit.getOnlinePlayers().forEach(player -> entries.add(player.getName()));
         return entries;
+    }
+
+    public static String getPlayerName(UUID uuid) {
+        if(Bukkit.getOfflinePlayer(uuid).getName() == null) return "Unknown";
+        return Bukkit.getOfflinePlayer(uuid).getName();
     }
 }

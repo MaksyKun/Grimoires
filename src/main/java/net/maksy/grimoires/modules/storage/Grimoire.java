@@ -96,6 +96,14 @@ public class Grimoire implements Serializable {
     }
 
     public Component getAuthorsComponent() {
-        return ChatUT.hexComp(authors.stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName()).reduce((a, b) -> a + ", " + b).orElse(""));
+        return ChatUT.hexComp(authors.stream().map(ChatUT::getPlayerName).reduce((a, b) -> a + ", " + b).orElse(""));
+    }
+
+    public Component getGenresComponent() {
+        return ChatUT.hexComp(genres.stream().map(Genre::getName).reduce((a, b) -> a + ", " + b).orElse(""));
+    }
+
+    public double getPublicationPrice() {
+        return GrimoireRegistry.pricing().getPrice(this.pages.size());
     }
 }
