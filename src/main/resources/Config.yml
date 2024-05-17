@@ -18,25 +18,25 @@ ChiseledBookShelfGui:
 
 Storage:
   DisplayTitle: "&8Books %name%"
-  FolderIcon:
-    GenreTitle: "&2&l✦ Genre: &a%genre%"
-    PlayerTitle: "&2&l✦ %player%'s &aBooks"
-    Lore: []
-  BookIcon:
-    Title: "&9%title%"
-    ConsumerLore:
-      - "&7Author: &a%author%"
-      - "&7Published: &a%published%"
-      - "&7Published on: &a%date%"
-    AuthorLore:
-      - "&7Author: &a%author%"
-      - "&7Published: &a%published%"
-      - "&7Published on: &a%date%"
-      - " "
-      - "%edit%"
-      - "%delete%"
-    EditFormat: "&a✎ Shift + Left-Click to edit"
-    DeleteFormat: "&4&lX &cShift + Right-Click to delete"
+  ZoneId: "UTC"
+  DateTimeFormat: "dd/MM/yyyy HH:mm:ss"
+  Status:
+    True: "&a&l✔"
+    False: "&4&l✘"
+    Unpublished: "&7Unpublished"
+  Icons:
+    Folder:
+      Material: BOOK
+      GenreTitle: "&2&l✦ Genre: &a%genre%"
+      Lore: []
+    Book:
+      Material: "WRITTEN_BOOK"
+      Title: "&9Title: &b%title%"
+      Lore:
+        - "&7Authors: &a%authors%"
+        - "&7Published on: &a%date%"
+      EditFormat: "&a✎ Shift + Left-Click to edit"
+      DeleteFormat: "&4&lX &cShift + Right-Click to delete"
 
 
 # Prevent players to edit their books once they have published them

@@ -19,7 +19,7 @@ public class GenreCfg {
 
     public void loadGenres() {
         for(String genre : config.getSection("Genres")) {
-            Genres.put(genre, new Genre(genre, config.getString("Genres." + genre + ".Name"), config.getString("Genres." + genre + ".Description")));
+            Genres.put(genre, new Genre(genre, config.getString("Genres." + genre + ".Name"), config.getStringList("Genres." + genre + ".Description")));
         }
     }
 

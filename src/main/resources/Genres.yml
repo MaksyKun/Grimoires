@@ -2,4 +2,6 @@ DefaultGenre: Others
 Genres:
   Others:
     Name: "Others"
-    Description: "Books that have no genre or are not classified in any genre yet."
+    Description:
+    - "&7Books that have no genre or are "
+    - "&7not classified in any genre yet."

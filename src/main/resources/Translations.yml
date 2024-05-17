@@ -1,0 +1,4 @@
+Publication:
+  BookPublished: "&aYou have published your book &e%title%!"
+  BookUnpublished: "&cYou have unpublished your book &e%title%!"
+  BookAlreadyPublished: "&cYou already published a book with this title!"

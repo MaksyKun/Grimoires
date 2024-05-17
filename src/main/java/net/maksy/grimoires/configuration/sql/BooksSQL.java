@@ -3,14 +3,12 @@ package net.maksy.grimoires.configuration.sql;
 import com.zaxxer.hikari.HikariDataSource;
 import net.maksy.grimoires.Genre;
 import net.maksy.grimoires.Grimoire;
-import org.bukkit.Bukkit;
 
 import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class BooksSQL {
 
@@ -32,8 +30,11 @@ public class BooksSQL {
 
     public int getBookCount() {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(Id) FROM " + TABLE)) {
-            return statement.executeQuery().getInt(1);
+             PreparedStatement select = connection.prepareStatement("SELECT COUNT(Id) FROM " + TABLE)) {
+           ResultSet result = select.executeQuery();
+            if(result.next()) {
+                return result.getInt(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -48,7 +49,6 @@ public class BooksSQL {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement insert = connection.prepareStatement("INSERT INTO " + TABLE + " VALUES(?, ?)")) {
             insert.setLong(1, getBookCount());
-            // Add the Grimoire variable book as a blob than can be parsed back later
             insert.setBytes(2, serializeObject(book));
             insert.execute();
         } catch (SQLException e) {

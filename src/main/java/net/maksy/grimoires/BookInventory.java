@@ -1,7 +1,6 @@
-package net.maksy.grimoires.viewer;
+package net.maksy.grimoires;
 
 import net.maksy.grimoires.Grimoires;
-import net.maksy.grimoires.utils.ChatUT;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.ChiseledBookshelf;

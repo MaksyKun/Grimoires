@@ -1,9 +1,12 @@
 package net.maksy.grimoires.commands;
 
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.maksy.grimoires.configuration.translation.Replaceable;
+import net.maksy.grimoires.configuration.translation.Translation;
 import net.maksy.grimoires.Grimoire;
+import net.maksy.grimoires.GrimoireRegistry;
+import net.maksy.grimoires.GrimoireStorage;
 import net.maksy.grimoires.Grimoires;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,7 +22,7 @@ import java.util.List;
 
 public class GrimoireCommand implements CommandExecutor, TabCompleter {
 
-    private final LegacyComponentSerializer serializer = LegacyComponentSerializer.builder().build();
+    public static final LegacyComponentSerializer Serializer = LegacyComponentSerializer.builder().build();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -38,12 +41,18 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
                 case "savebook":
                     ItemStack item = player.getInventory().getItemInMainHand();
                     if (item.getItemMeta() instanceof BookMeta book) {
-                        Grimoire grimoire = new Grimoire(-1, List.of(player.getUniqueId()), book.getTitle(), " ", List.of(), book.pages().stream().map(page -> serializer.serialize(page)).toList(), System.currentTimeMillis());
+                        if(GrimoireRegistry.isGrimoireExistent(player.getUniqueId(), book.getTitle())) {
+                            Translation.Publication_BookAlreadyPublished.sendMessage(player);
+                            return true;
+                        }
+                        Grimoire grimoire = new Grimoire(-1, List.of(player.getUniqueId()), book.getTitle(), " ", List.of(), book.pages().stream().map(Serializer::serialize).toList(), System.currentTimeMillis());
                         Grimoires.sql().getBooksSQL().addBook(grimoire);
+                        GrimoireRegistry.updateRegistry();
+                        Translation.Publication_BookPublished.sendMessage(player, new Replaceable("%title%", book.getTitle()));
                     }
                     break;
                 case "show":
-                    // TODO show book
+                    new GrimoireStorage().open(player);
                     break;
                 default:
                     // TODO help message
