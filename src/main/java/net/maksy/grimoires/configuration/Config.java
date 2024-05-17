@@ -2,10 +2,11 @@ package net.maksy.grimoires.configuration;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
-import net.maksy.grimoires.Genre;
-import net.maksy.grimoires.Grimoire;
+import net.maksy.grimoires.modules.storage.Genre;
+import net.maksy.grimoires.modules.storage.Grimoire;
 import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.configuration.sql.DatabaseType;
+import net.maksy.grimoires.modules.storage.publication.PricingStages;
 import net.maksy.grimoires.utils.ChatUT;
 import net.maksy.grimoires.utils.ItemUT;
 import org.bukkit.Material;
@@ -111,5 +112,17 @@ public class Config {
                     .replaceText(TextReplacementConfig.builder().match("%date%").replacement(getDateTime(grimoire.getPublishedOn())).build())
             );
         return ItemUT.getItem(material, title, false, lore);
+    }
+
+    public PricingStages getPricingStages() {
+        PricingStages pricing = new PricingStages(config.getBoolean("Storage.Pricing.Enabled", false));
+        for(String key : config.getSection("Storage.Pricing.PageStages")) {
+            try {
+                pricing.addPrice(Integer.parseInt(key), config.getDouble("Storage.Pricing.PageStages." + key));
+            } catch (NumberFormatException e) {
+                Grimoires.getInstance().getLogger().warning("Invalid pricing stage: " + key);
+            }
+        }
+        return pricing;
     }
 }

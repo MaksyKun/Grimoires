@@ -1,4 +1,4 @@
-package net.maksy.grimoires;
+package net.maksy.grimoires.modules.storage;
 
 import org.jetbrains.annotations.NotNull;
 

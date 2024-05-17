@@ -1,5 +1,7 @@
 package net.maksy.grimoires;
 
+import net.maksy.grimoires.modules.storage.Grimoire;
+
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;

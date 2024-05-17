@@ -2,6 +2,9 @@ package net.maksy.grimoires.utils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.maksy.grimoires.Grimoires;
+import net.maksy.grimoires.hooks.HeadDatabaseHook;
+import net.maksy.grimoires.hooks.HookType;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -37,7 +40,12 @@ public class ItemUT {
     }
 
     public static ItemStack getHead(String headID, Component name, List<Component> lore) {
-        ItemStack item = HeadDatabaseHook.HeadDatabaseAPI.getItemHead(headID);
+        ItemStack item;
+        if(Grimoires.getHookManager().isHooked(HookType.HeadDatabase)) {
+            item = new ItemStack(Material.PLAYER_HEAD, 1);
+        } else {
+            item = HeadDatabaseHook.HeadDatabaseAPI.getItemHead(headID);
+        }
         ItemMeta meta = item.getItemMeta();
         if (name != null) {
             meta.displayName(name.decoration(TextDecoration.ITALIC, false));

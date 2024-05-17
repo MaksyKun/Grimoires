@@ -1,13 +1,19 @@
-package net.maksy.grimoires;
+package net.maksy.grimoires.modules.storage;
+
+import net.maksy.grimoires.Grimoires;
+import net.maksy.grimoires.modules.storage.publication.PricingStages;
 
 import java.util.*;
 
 public class GrimoireRegistry {
 
-    private static Map<Genre, List<Grimoire>> Registry = new TreeMap<>();
+    private static final Map<Genre, List<Grimoire>> Registry = new TreeMap<>();
+    private static PricingStages pricingStages;
 
     public static void updateRegistry() {
         Registry.clear();
+        pricingStages = Grimoires.getConfiguration().getPricingStages();
+
         List<Grimoire> entries = Grimoires.sql().getBooksSQL().getBooks(null, null);
         Registry.putIfAbsent(Grimoires.getGenreCfg().getDefaultGenre(), new ArrayList<>());
         for (Grimoire grimoire : entries) {
@@ -82,5 +88,9 @@ public class GrimoireRegistry {
             }
         }
         return false;
+    }
+
+    public PricingStages pricing() {
+        return pricingStages;
     }
 }

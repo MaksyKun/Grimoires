@@ -1,4 +1,4 @@
-package net.maksy.grimoires;
+package net.maksy.grimoires.modules.shelves;
 
 import net.maksy.grimoires.Grimoires;
 import org.bukkit.Bukkit;
@@ -18,7 +18,7 @@ public class BookInventory implements Listener {
     private final ChiseledBookshelf chiseledBookshelf;
 
     public BookInventory(ChiseledBookshelf chiseledBookshelf) {
-        this.inventory = Bukkit.createInventory(null, 9, Grimoires.getConfigManager().getChiseledBookshelfGuiTitle());
+        this.inventory = Bukkit.createInventory(null, 9, Grimoires.getConfiguration().getChiseledBookshelfGuiTitle());
         this.chiseledBookshelf = chiseledBookshelf;
         initialize();
         Grimoires.registerListener(this);

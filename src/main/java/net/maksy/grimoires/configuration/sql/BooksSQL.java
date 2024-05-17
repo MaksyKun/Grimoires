@@ -1,8 +1,8 @@
 package net.maksy.grimoires.configuration.sql;
 
 import com.zaxxer.hikari.HikariDataSource;
-import net.maksy.grimoires.Genre;
-import net.maksy.grimoires.Grimoire;
+import net.maksy.grimoires.modules.storage.Genre;
+import net.maksy.grimoires.modules.storage.Grimoire;
 
 import java.io.*;
 import java.sql.*;
@@ -154,7 +154,21 @@ public class BooksSQL {
 
     public Object deserializeObject(byte[] data) {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(data);
-             ObjectInputStream ois = new ObjectInputStream(bais)) {
+             ObjectInputStream ois = new ObjectInputStream(bais) {
+                 @Override
+                 protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+                     String className = desc.getName();
+                     // Translate old class names to new class names
+                     if (className.equals("net.maksy.grimoires.Grimoire")) {
+                         className = "net.maksy.grimoires.modules.storage.Grimoire";
+                     }
+                     try {
+                         return Class.forName(className, false, getClass().getClassLoader());
+                     } catch (ClassNotFoundException ex) {
+                         return super.resolveClass(desc);
+                     }
+                 }
+             }) {
             return ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

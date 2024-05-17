@@ -17,9 +17,21 @@ ChiseledBookShelfGui:
 
 
 Storage:
+  Enabled:
+  # Enables pricing for publishing books. If 'false', the player can publish books for free
+  # The pricing can be staged on the amount of pages
+  # Requires Vault to be installed
+  Pricing:
+    Enabled: true
+    PageStages:
+      25: 250
+      50: 500
+      75: 750
+      100: 1000
+
   DisplayTitle: "&8Books %name%"
-  ZoneId: "UTC"
   DateTimeFormat: "dd/MM/yyyy HH:mm:ss"
+  ZoneId: "UTC"
   Status:
     True: "&a&l✔"
     False: "&4&l✘"

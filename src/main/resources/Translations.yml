@@ -1,4 +1,9 @@
 Publication:
-  BookPublished: "&aYou have published your book &e%title%!"
+  BookPublished: "&aYou have published your book &e%title% &afor &e%price%!"
   BookUnpublished: "&cYou have unpublished your book &e%title%!"
   BookAlreadyPublished: "&cYou already published a book with this title!"
+
+Vault:
+  ErrorPlayers: "&cYour server cant process transactions at the moment. Please contact an administrator."
+  FreeFormat: "&lFree"
+  MoneyFormat: "&l%price%$"

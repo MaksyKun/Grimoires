@@ -1,6 +1,6 @@
 package net.maksy.grimoires.configuration;
 
-import net.maksy.grimoires.Genre;
+import net.maksy.grimoires.modules.storage.Genre;
 import net.maksy.grimoires.Grimoires;
 
 import java.util.HashMap;

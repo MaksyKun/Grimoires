@@ -1,4 +1,4 @@
-package net.maksy.grimoires.utils;
+package net.maksy.grimoires.hooks;
 
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 

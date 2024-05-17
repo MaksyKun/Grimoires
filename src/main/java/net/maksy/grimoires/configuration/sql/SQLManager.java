@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 public class SQLManager {
-    private static final Config config = Grimoires.getConfigManager();
+    private static final Config config = Grimoires.getConfiguration();
 
     private final HikariDataSource dataSource = new HikariDataSource();
 
