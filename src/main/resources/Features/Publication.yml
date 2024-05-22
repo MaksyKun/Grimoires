@@ -29,7 +29,7 @@ SubGui:
   Authors:
     # There are several search algorithms to add authors:
     # It requires four parameters:
-    # - 'Type:' - The search algorithm to use, can be:
+    # - 'Type:' - The search algorithm to use (default: NEARBY), can be:
     #  -> 'ALL' - All players can be selected
     #  -> 'ONLINE' - Only online players can be selected
     #  -> 'NEARBY' - Only players nearby can be selected
@@ -51,7 +51,7 @@ SubGui:
       Author:
         Title: "&9%name%"
         Lore:
-          - "&7Right click to remove author"
+          - "&7Click to manage this author"
   Genres:
     Title: "Genres"
     Icons:
@@ -64,7 +64,7 @@ SubGui:
         Material: "BOOK"
         Title: "&9%name%"
         Lore:
-          - "&7Right click to remove genre"
+          - "&7Click to manage this genre"
 
 # Enables pricing for publishing books. If 'false', the player can publish books for free
 # The pricing can be staged on the amount of pages

@@ -1,5 +1,6 @@
 package net.maksy.grimoires.modules.book_management.publication.gui;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.modules.book_management.publication.PublicationModule;
@@ -19,8 +20,12 @@ import java.util.UUID;
 
 public class AuthorGui implements Listener {
 
+    @Getter
     private final PublicationEditor editor;
 
+    private PlayerSearchGui playerSearchGui;
+
+    @Getter
     public List<UUID> authors;
     private final Component title;
     private List<Inventory> inventories;
@@ -35,17 +40,13 @@ public class AuthorGui implements Listener {
         Grimoires.registerListener(this);
     }
 
-    public List<UUID> getAuthors() {
-        return authors;
-    }
-
     public void addAuthor(UUID author) {
-        if(authors.contains(author)) return;
+        if (authors.contains(author)) return;
         authors.add(author);
     }
 
     public void removeAuthor(UUID author) {
-        if(author.equals(editor.getPlayer().getUniqueId())) return;
+        if (author.equals(editor.getPlayer().getUniqueId())) return;
         authors.remove(author);
     }
 
@@ -84,7 +85,7 @@ public class AuthorGui implements Listener {
             inv.setItem(invDex, PublicationModule.getPublicationCfg().getAuthorsGuiAuthorIcon(entry));
         }
 
-        if(inv != null) {
+        if (inv != null) {
             inventories.add(inv);
             inventories.add(inv);
         } else {
@@ -107,17 +108,18 @@ public class AuthorGui implements Listener {
         int slot = event.getSlot();
         int size = inventories.size();
         switch (slot) {
-            case 4 -> {}
+            case 4 -> {
+                if (playerSearchGui == null) playerSearchGui = new PlayerSearchGui(this);
+                playerSearchGui.open(player);
+            }
             case 36 -> editor.open();
             case 39 -> open(player, (size + invdex - 1) % size);
             case 41 -> open(player, (invdex + 1) % size);
             default -> {
                 if (!slots.isEmpty() && slots.get(inventories.get(invdex)).get(slot) != null) {
-                    if(event.isRightClick()) {
-                        UUID entry = slots.get(inventories.get(invdex)).get(slot);
-                        removeAuthor(entry);
-                        open(player);
-                    }
+                    UUID entry = slots.get(inventories.get(invdex)).get(slot);
+                    removeAuthor(entry);
+                    open(player);
                 }
             }
         }

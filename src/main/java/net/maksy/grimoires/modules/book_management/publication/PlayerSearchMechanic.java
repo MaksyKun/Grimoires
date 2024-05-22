@@ -1,5 +1,6 @@
 package net.maksy.grimoires.modules.book_management.publication;
 
+import lombok.Getter;
 import net.maksy.grimoires.modules.book_management.publication.gui.AuthorGui;
 import net.maksy.grimoires.modules.book_management.publication.gui.PlayerSearchGui;
 
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+@Getter
 public class PlayerSearchMechanic {
 
     private final SearchType searchType;

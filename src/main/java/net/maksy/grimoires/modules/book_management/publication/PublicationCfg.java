@@ -95,6 +95,10 @@ public class PublicationCfg {
             lore.add(ChatUT.hexComp(line.replace("%name%", ChatUT.getPlayerName(uuid))));
         return ItemUT.getSkull(uuid, title, lore);
     }
+    /* Player Search Mechanic*/
+    public PlayerSearchMechanic getPlayerSearchMechanic() {
+        return new PlayerSearchMechanic(SearchType.valueOf(config.getString("PlayerSearch.Type", "NEARBY").toUpperCase()), config.getDouble("PlayerSearch.Distance", 20), config.getInt("PlayerSearch.CheckInterval", 5), config.getInt("PlayerSearch.Limit", 3));
+    }
 
     /* Sub gui for genres */
     public Component getPGenresGuiTitle() {

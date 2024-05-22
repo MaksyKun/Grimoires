@@ -1,5 +1,6 @@
 package net.maksy.grimoires.modules.book_management.publication.gui;
 
+import lombok.Getter;
 import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.modules.book_management.publication.PublicationModule;
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
@@ -14,7 +15,9 @@ import org.bukkit.inventory.Inventory;
 public class PublicationEditor implements Listener {
 
     private final Inventory inventory;
+    @Getter
     private final Player player;
+    @Getter
     private final Grimoire grimoire;
 
     private final AuthorGui authors;
@@ -27,14 +30,6 @@ public class PublicationEditor implements Listener {
         this.genres = new GenreGui(this, grimoire.getGenres());
         this.inventory = Bukkit.createInventory(player, 9, PublicationModule.getPublicationCfg().getPublicationTitle());
         Grimoires.registerListener(this);
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public Grimoire getGrimoire() {
-        return grimoire;
     }
 
     private void initialize() {

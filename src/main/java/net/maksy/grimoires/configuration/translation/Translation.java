@@ -16,6 +16,7 @@ public enum Translation {
     Publication_BookPublished("Publication.BookPublished"),
     Publication_BookAlreadyPublished("Publication.BookAlreadyPublished"),
     Publication_BookUnpublished("Publication.BookUnpublished"),
+    Publication_AuthorsLimitReached("Publication.AuthorsLimitReached"),
 
     Vault_ErrorPlayers("Vault.ErrorPlayers"),
     Vault_FreeFormat("Vault.FreeFormat"),
