@@ -1,8 +1,8 @@
-package net.maksy.grimoires.modules.storage.publication;
+package net.maksy.grimoires.modules.book_management.publication.gui;
 
 import net.kyori.adventure.text.Component;
 import net.maksy.grimoires.Grimoires;
-import net.maksy.grimoires.modules.storage.Genre;
+import net.maksy.grimoires.modules.book_management.publication.PublicationModule;
 import net.maksy.grimoires.utils.InventoryUT;
 import net.maksy.grimoires.utils.ItemUT;
 import org.bukkit.Material;
@@ -17,34 +17,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class GenreGui implements Listener {
+public class AuthorGui implements Listener {
 
-    private PublicationEditor editor;
+    private final PublicationEditor editor;
 
-    public List<Genre> genres;
+    public List<UUID> authors;
     private final Component title;
     private List<Inventory> inventories;
 
-    private final HashMap<Inventory, HashMap<Integer, Genre>> slots = new HashMap<>();
+    private final HashMap<Inventory, HashMap<Integer, UUID>> slots = new HashMap<>();
 
-    public GenreGui(PublicationEditor editor, List<Genre> initialGenres) {
+    public AuthorGui(PublicationEditor editor, List<UUID> initialAuthors) {
         this.editor = editor;
-        this.genres = new ArrayList<>(initialGenres);
-        this.title = Grimoires.getConfiguration().getPublicationAuthorsTitle();
+        this.authors = new ArrayList<>(initialAuthors);
+        this.title = PublicationModule.getPublicationCfg().getAuthorsGuiTitle();
         inventories = List.of(InventoryUT.createFilledInventory(null, title, 45, Material.GRAY_STAINED_GLASS_PANE));
         Grimoires.registerListener(this);
     }
 
-    public List<Genre> getGenres() {
-        return genres;
+    public List<UUID> getAuthors() {
+        return authors;
     }
 
-    public void addGenre(Genre genre) {
-        genres.add(genre);
+    public void addAuthor(UUID author) {
+        if(authors.contains(author)) return;
+        authors.add(author);
     }
 
-    public void removeGenre(Genre genre) {
-        genres.remove(genre);
+    public void removeAuthor(UUID author) {
+        if(author.equals(editor.getPlayer().getUniqueId())) return;
+        authors.remove(author);
     }
 
     public void open(Player player) {
@@ -58,28 +60,28 @@ public class GenreGui implements Listener {
 
     private void initialize() {
         slots.clear();
-        HashMap<Integer, Genre> invSlots = new HashMap<>();
+        HashMap<Integer, UUID> invSlots = new HashMap<>();
         List<Inventory> inventories = new ArrayList<>();
         Inventory inv = null;
 
-        for (int i = 0; i < genres.size(); i++) {
+        for (int i = 0; i < authors.size(); i++) {
             int invDex = i % 27 + 9;
             if (invDex == 9) {
                 if (inv != null)
                     inventories.add(inv);
                 inv = InventoryUT.createFilledInventory(null, title, 45, Material.GRAY_STAINED_GLASS_PANE);
-                inv.setItem(4, Grimoires.getConfiguration().getPublicationGenreAddIcon());
+                inv.setItem(4, PublicationModule.getPublicationCfg().getAuthorsGuiAddIcon());
                 inv.setItem(36, ItemUT.backItem);
                 inv.setItem(39, ItemUT.previousPageItem);
                 inv.setItem(41, ItemUT.nextPageItem);
                 invSlots = new HashMap<>();
             }
-            if (genres.get(i) == null)
+            if (authors.get(i) == null)
                 break;
-            Genre entry = genres.get(i);
+            UUID entry = authors.get(i);
             invSlots.put(invDex, entry);
             slots.put(inv, invSlots);
-            inv.setItem(invDex, Grimoires.getConfiguration().getPublicationGenreGuiGenreIcon(entry));
+            inv.setItem(invDex, PublicationModule.getPublicationCfg().getAuthorsGuiAuthorIcon(entry));
         }
 
         if(inv != null) {
@@ -87,12 +89,13 @@ public class GenreGui implements Listener {
             inventories.add(inv);
         } else {
             Inventory _inv = InventoryUT.createFilledInventory(null, title, 45, Material.GRAY_STAINED_GLASS_PANE);
-            _inv.setItem(4, Grimoires.getConfiguration().getPublicationGenreAddIcon());
+            _inv.setItem(4, PublicationModule.getPublicationCfg().getAuthorsGuiAddIcon());
             _inv.setItem(36, ItemUT.backItem);
             _inv.setItem(39, ItemUT.previousPageItem);
             _inv.setItem(41, ItemUT.nextPageItem);
             inventories.add(_inv);
         }
+
         this.inventories = inventories;
     }
 
@@ -111,8 +114,8 @@ public class GenreGui implements Listener {
             default -> {
                 if (!slots.isEmpty() && slots.get(inventories.get(invdex)).get(slot) != null) {
                     if(event.isRightClick()) {
-                        Genre entry = slots.get(inventories.get(invdex)).get(slot);
-                        removeGenre(entry);
+                        UUID entry = slots.get(inventories.get(invdex)).get(slot);
+                        removeAuthor(entry);
                         open(player);
                     }
                 }

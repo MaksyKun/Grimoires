@@ -1,13 +1,12 @@
 package net.maksy.grimoires.commands;
 
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.maksy.grimoires.configuration.translation.Replaceable;
 import net.maksy.grimoires.configuration.translation.Translation;
-import net.maksy.grimoires.modules.storage.Grimoire;
-import net.maksy.grimoires.modules.storage.GrimoireRegistry;
-import net.maksy.grimoires.modules.storage.GrimoireStorage;
+import net.maksy.grimoires.modules.book_management.storage.Grimoire;
+import net.maksy.grimoires.modules.book_management.storage.GrimoireRegistry;
+import net.maksy.grimoires.modules.book_management.storage.GrimoireStorage;
 import net.maksy.grimoires.Grimoires;
-import net.maksy.grimoires.modules.storage.publication.PublicationEditor;
+import net.maksy.grimoires.modules.book_management.publication.gui.PublicationEditor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

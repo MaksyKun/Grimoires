@@ -1,4 +1,4 @@
-package net.maksy.grimoires.modules.storage.publication;
+package net.maksy.grimoires.modules.book_management.publication;
 
 import it.unimi.dsi.fastutil.Pair;
 import net.maksy.grimoires.Grimoires;
@@ -13,7 +13,7 @@ import java.util.*;
 public class PricingStages {
 
     private final List<Pair<Integer, Double>> Pricing = new ArrayList<>();
-    private boolean enabled;
+    private final boolean enabled;
 
     public PricingStages(boolean enabled) {
         this.enabled = enabled;

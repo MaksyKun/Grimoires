@@ -1,4 +1,4 @@
-package net.maksy.grimoires.modules.storage;
+package net.maksy.grimoires.modules.book_management.storage;
 
 import net.kyori.adventure.text.Component;
 import net.maksy.grimoires.Grimoires;
@@ -14,13 +14,6 @@ import org.bukkit.inventory.Inventory;
 import java.util.*;
 
 public class GrimoireStorage implements Listener {
-
-    public static Map<Genre, GrimoireStorage> CachedGenreStorage = new HashMap<>();
-    public static Map<UUID, GrimoireStorage> CachedAuthorStorage = new HashMap<>();
-
-    private final List<GrimoireStorage> folders = new ArrayList<>();
-    private final List<Grimoire> books = new ArrayList<>();
-
     private UUID selectedUUID = null;
     private Genre selectedGenre = null;
 
@@ -30,7 +23,7 @@ public class GrimoireStorage implements Listener {
     private final HashMap<Inventory, HashMap<Integer, Grimoire>> itemSlots = new HashMap<>();
 
     public GrimoireStorage() {
-        this.mainDisplay = Grimoires.getConfiguration().getMainItemFolderTitle("");
+        this.mainDisplay = BookStorageModule.getBookStorageCfg().getTitle("");
         this.inventories = List.of(InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE));
         Grimoires.registerListener(this);
         initialize();
@@ -38,7 +31,7 @@ public class GrimoireStorage implements Listener {
 
     public GrimoireStorage(UUID uuid) {
         this.selectedUUID = uuid;
-        this.mainDisplay = Grimoires.getConfiguration().getMainItemFolderTitle("");
+        this.mainDisplay = BookStorageModule.getBookStorageCfg().getTitle("");
         this.inventories = List.of(InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE));
         Grimoires.registerListener(this);
         initialize();
@@ -46,7 +39,7 @@ public class GrimoireStorage implements Listener {
 
     public GrimoireStorage(Genre genre) {
         this.selectedGenre = genre;
-        this.mainDisplay = Grimoires.getConfiguration().getMainItemFolderTitle(genre.getName());
+        this.mainDisplay = BookStorageModule.getBookStorageCfg().getTitle(genre.getName());
         this.inventories = List.of(InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE));
         Grimoires.registerListener(this);
         initialize();
@@ -55,7 +48,7 @@ public class GrimoireStorage implements Listener {
     public GrimoireStorage(UUID uuid, Genre genre) {
         this.selectedUUID = uuid;
         this.selectedGenre = genre;
-        this.mainDisplay = Grimoires.getConfiguration().getMainItemFolderTitle(genre.getName());
+        this.mainDisplay = BookStorageModule.getBookStorageCfg().getTitle(genre.getName());
         this.inventories = List.of(InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE));
         Grimoires.registerListener(this);
         initialize();
@@ -109,7 +102,7 @@ public class GrimoireStorage implements Listener {
             Genre entry = entries.get(i);
             invSlots.put(invDex, new GrimoireStorage(selectedUUID, entry));
             folderSlots.put(inv, invSlots);
-            inv.setItem(invDex, Grimoires.getConfiguration().getGenreIcon(entry));
+            inv.setItem(invDex, BookStorageModule.getBookStorageCfg().getGenreIcon(entry));
         }
         inventories.add(inv == null ? InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE) : inv);
         this.inventories = inventories;
@@ -139,7 +132,7 @@ public class GrimoireStorage implements Listener {
             Grimoire entry = entries.get(i);
             invSlots.put(invDex, entry);
             itemSlots.put(inv, invSlots);
-            inv.setItem(invDex, Grimoires.getConfiguration().getBookIcon(entry));
+            inv.setItem(invDex, BookStorageModule.getBookStorageCfg().getBookIcon(entry));
         }
         inventories.add(inv == null ? InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE) : inv);
         this.inventories = inventories;

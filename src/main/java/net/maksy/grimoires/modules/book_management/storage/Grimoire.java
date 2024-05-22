@@ -1,4 +1,4 @@
-package net.maksy.grimoires.modules.storage;
+package net.maksy.grimoires.modules.book_management.storage;
 
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;

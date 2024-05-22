@@ -1,10 +1,11 @@
-package net.maksy.grimoires.modules.storage;
+package net.maksy.grimoires.modules.book_management.storage;
 
 import net.maksy.grimoires.configuration.YamlParser;
-import net.maksy.grimoires.modules.storage.Genre;
 import net.maksy.grimoires.Grimoires;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GenreCfg {
@@ -27,5 +28,9 @@ public class GenreCfg {
     public Genre getDefaultGenre() {
         String genre = config.getString("DefaultGenre");
         return Genres.get(genre);
+    }
+
+    public List<Genre> getAllGenres() {
+        return new ArrayList<>(Genres.values());
     }
 }

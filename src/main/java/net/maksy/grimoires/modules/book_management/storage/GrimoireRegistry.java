@@ -1,7 +1,8 @@
-package net.maksy.grimoires.modules.storage;
+package net.maksy.grimoires.modules.book_management.storage;
 
 import net.maksy.grimoires.Grimoires;
-import net.maksy.grimoires.modules.storage.publication.PricingStages;
+import net.maksy.grimoires.modules.book_management.publication.PricingStages;
+import net.maksy.grimoires.modules.book_management.publication.PublicationModule;
 
 import java.util.*;
 
@@ -12,13 +13,13 @@ public class GrimoireRegistry {
 
     public static void updateRegistry() {
         Registry.clear();
-        pricingStages = Grimoires.getConfiguration().getPricingStages();
+        pricingStages = PublicationModule.getPublicationCfg().getPricingStages();
 
         List<Grimoire> entries = Grimoires.sql().getBooksSQL().getBooks(null, null);
-        Registry.putIfAbsent(Grimoires.getGenreCfg().getDefaultGenre(), new ArrayList<>());
+        Registry.putIfAbsent(BookStorageModule.getGenreCfg().getDefaultGenre(), new ArrayList<>());
         for (Grimoire grimoire : entries) {
             if(grimoire.getGenres().isEmpty()) {
-                Registry.get(Grimoires.getGenreCfg().getDefaultGenre()).add(grimoire);
+                Registry.get(BookStorageModule.getGenreCfg().getDefaultGenre()).add(grimoire);
             } else {
                 for (Genre genre : grimoire.getGenres()) {
                     Registry.putIfAbsent(genre, new ArrayList<>());
@@ -83,7 +84,7 @@ public class GrimoireRegistry {
 
     public static boolean isGrimoireExistent(UUID uuid, String title) {
         for(Grimoire grimoire : getGrimoires(uuid)) {
-            if(grimoire.getTitle().toLowerCase().equals(title.toLowerCase())) {
+            if(grimoire.getTitle().equalsIgnoreCase(title)) {
                 return true;
             }
         }

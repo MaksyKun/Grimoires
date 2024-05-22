@@ -1,4 +1,4 @@
-MainGUI:
+MainGui:
   Title: "Your publication"
   Icons:
     Book:
@@ -25,14 +25,22 @@ MainGUI:
       Lore:
         - "&7Manage the genres of this book"
 
-SubGUI:
+SubGui:
   Authors:
-    # Authors can only be added by the player when they are near him
-    # It requires two parameters:
-    # - 'Distance:' - The distance in blocks players need to be near
+    # There are several search algorithms to add authors:
+    # It requires four parameters:
+    # - 'Type:' - The search algorithm to use, can be:
+    #  -> 'ALL' - All players can be selected
+    #  -> 'ONLINE' - Only online players can be selected
+    #  -> 'NEARBY' - Only players nearby can be selected
+    # - 'Distance:' - The distance in blocks players need to be near, -1 for global
     # - 'CheckInterval:' - The interval the gui updates in seconds
-    Distance: 20
-    CheckInterval: 5
+    # - 'Limit:' - The maximum amount of authors for a book
+    SearchMechanic:
+      Type: NEARBY
+      Distance: 20
+      CheckInterval: 5
+      Limit: 3
     Title: "Authors"
     Icons:
       Add:
