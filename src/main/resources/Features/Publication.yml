@@ -1,3 +1,12 @@
+# The books how it shall look as an item obtained in the inventory
+PublishedBook:
+  Title: "&9%title%"
+  Lore:
+    - "&7Authors: &a%authors%"
+    - "&7Published on: &a%date%"
+    - " "
+    - "&7Genres: &a%genres%"
+
 MainGui:
   Title: "Your publication"
   Icons:

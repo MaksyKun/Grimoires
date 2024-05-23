@@ -7,6 +7,9 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.maksy.grimoires.modules.mysteries.MysteryModule;
 import net.maksy.grimoires.utils.ChatUT;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.intellij.lang.annotations.RegExp;
 
 import java.io.Serial;
@@ -98,38 +101,6 @@ public class Grimoire implements Serializable {
         this.publishedOn = publishedOn;
     }
 
-    public Book getBook() {
-        Book.Builder book = Book.builder();
-        book.title(ChatUT.hexComp(title));
-        String authorsString = authors.stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName()).reduce((a, b) -> a + ", " + b).orElse("");
-        book.author(ChatUT.hexComp(authorsString));
-        if(!MysteryModule.getEncryptionAlgorithm().enabled() || encryptionKeys.isEmpty()) {
-            book.pages(pages.stream().map(ChatUT::hexComp).toArray(Component[]::new));
-        } else {
-            AtomicInteger amount = new AtomicInteger();
-            book.pages(pages.stream().map(page -> {
-                Component component = ChatUT.hexComp(page);
-                if(amount.get() >= encryptionKeys.size()) return component;
-                if(page.contains(MysteryModule.getMysteriesCfg().getEncryptionAlgorithm().indicator())) {
-                    // Get the words right after the indicator and replace those by a component that highlights the word
-                    // Also adds a click event to decrypt the word later
-                    String indicator = MysteryModule.getMysteriesCfg().getEncryptionAlgorithm().indicator();
-                    String[] words = page.split(" ");
-                    for(@RegExp String word : words) {
-                        if(word.startsWith(indicator)) {
-                            TextReplacementConfig replacement = TextReplacementConfig.builder().match(word).replacement(ChatUT.hexComp(MysteryModule.getEncryptionAlgorithm().design().replace("%text%", word.replace(indicator, ""))).clickEvent(ClickEvent.runCommand("/grimoires decrypt " + id + " " + word.replace(indicator, "")))).build();
-                            component = component.replaceText(replacement);
-                            amount.getAndIncrement();
-                            return component;
-                        }
-                    }
-                }
-                return component;
-            }).toArray(Component[]::new));
-        }
-        return book.build();
-    }
-
     public Component getAuthorsComponent() {
         return ChatUT.hexComp(authors.stream().map(ChatUT::getPlayerName).reduce((a, b) -> a + ", " + b).orElse(""));
     }
@@ -164,5 +135,48 @@ public class Grimoire implements Serializable {
 
     public void setCommands(List<String> commands) {
         this.commands = commands;
+    }
+
+    public Book getBook() {
+        Book.Builder book = Book.builder();
+        book.title(ChatUT.hexComp(title));
+        String authorsString = authors.stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName()).reduce((a, b) -> a + ", " + b).orElse("");
+        book.author(ChatUT.hexComp(authorsString));
+        if(!MysteryModule.getEncryptionAlgorithm().enabled() || encryptionKeys.isEmpty()) {
+            book.pages(pages.stream().map(ChatUT::hexComp).toArray(Component[]::new));
+        } else {
+            AtomicInteger amount = new AtomicInteger();
+            String indicator = MysteryModule.getMysteriesCfg().getEncryptionAlgorithm().indicator();
+            book.pages(pages.stream().map(page -> {
+                Component component = ChatUT.hexComp(page);
+                if(amount.get() >= encryptionKeys.size()) return component;
+                if(page.contains(MysteryModule.getMysteriesCfg().getEncryptionAlgorithm().indicator())) {
+                    // Get the words right after the indicator and replace those by a component that highlights the word
+                    // Also adds a click event to decrypt the word later
+                    String[] words = page.split(" ");
+                    for(@RegExp String word : words) {
+                        if(word.startsWith(indicator)) {
+                            TextReplacementConfig replacement = TextReplacementConfig.builder().match(word).replacement(ChatUT.hexComp(MysteryModule.getEncryptionAlgorithm().design().replace("%word%", word.replace(indicator, ""))).clickEvent(ClickEvent.runCommand("grimoires decrypt " + id + " " + word.replace(indicator, "")))).build();
+                            component = component.replaceText(replacement);
+                            amount.getAndIncrement();
+                        }
+                    }
+                }
+                return component;
+            }).toArray(Component[]::new));
+        }
+        return book.build();
+    }
+
+    public ItemStack toItemStack() {
+        ItemStack item = new ItemStack(Material.WRITTEN_BOOK);
+        BookMeta meta = (BookMeta) item.getItemMeta();
+        Book book = getBook();
+        meta.title(book.title());
+        meta.author(book.author());
+        meta.pages(book.pages());
+        meta.lore();
+        item.setItemMeta(meta);
+        return item;
     }
 }

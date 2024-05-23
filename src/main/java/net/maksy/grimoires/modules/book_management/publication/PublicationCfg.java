@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.configuration.YamlParser;
+import net.maksy.grimoires.modules.book_management.storage.BookStorageModule;
 import net.maksy.grimoires.modules.book_management.storage.Genre;
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
 import net.maksy.grimoires.utils.ChatUT;
@@ -23,6 +24,18 @@ public class PublicationCfg {
         this.config = YamlParser.loadOrExtract(Grimoires.getInstance(), "Features/Publication.yml");
     }
 
+    public ItemStack getGrimoireItemstack(Grimoire grimoire) {
+        Component title = ChatUT.hexComp(config.getString("GrimoireItemstack.Title", "&9%title%").replace("%title%", grimoire.getTitle()));
+        List<Component> lore = new ArrayList<>();
+        for (String line : config.getStringList("GrimoireItemstack.Lore"))
+            lore.add(ChatUT.hexComp(line)
+                    .replaceText(TextReplacementConfig.builder().match("%title%").replacement(Component.text(grimoire.getTitle())).build())
+                    .replaceText(TextReplacementConfig.builder().match("%authors%").replacement(grimoire.getAuthorsComponent()).build())
+                    .replaceText(TextReplacementConfig.builder().match("%genres%").replacement(grimoire.getGenresComponent()).build())
+                    .replaceText(TextReplacementConfig.builder().match("%published%").replacement(BookStorageModule.getBookStorageCfg().getDateTime(grimoire.getPublishedOn())).build())
+            );
+        return ItemUT.getItem(Material.WRITTEN_BOOK, title, false, lore);
+    }
     /* Main publication Gui*/
     public Component getPublicationTitle() {
         return ChatUT.hexComp(config.getString("MainGui.Title", "Publication Editor"));
