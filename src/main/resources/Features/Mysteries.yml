@@ -1,0 +1,30 @@
+# Using mysteries allows users to interact with a book to find specific words
+# in order to solve an encryption and get a reward. Those rewards can be
+# rather commands or spells through addons of other plugins
+
+# This feature is staff only since it allows to use op commands for solving books
+# Adding support for common players might be considered if you have a great idea of how to do it
+# You can make suggestions here: https://github.com/MaksyKun/Grimoires/issues
+Enabled: true
+
+# Encryption is kind of tricky to handle. You use the indicator before a word
+# that you want to use for a mystery. Further information underneath:
+# - 'Indicator' is the symbol that will be used to indicate a word as encrypted. Use this before a word to encrypt it
+# - If the 'WordLimit' is reached, remaining words will be formatted to normal text again.
+# - 'Design' will show the encrypted words highlighted, else, just use "%word%" to show the plain word in the book
+# - 'ResetOnFail' will reset the encryption if the player fails to solve by clicking wrong words if an exact order is required
+# Detailed information on Encryption can be found in the wiki
+Encryption:
+  Indicator: "#!"
+  WordLimit: 5
+  Design: "&o%word%"
+  ResetOnFail: true
+  Sounds:
+    Discovered: ENTITY_EXPERIENCE_ORB_PICKUP
+    Failed: ENTITY_VILLAGER_NO
+    Success: ENTITY_PLAYER_LEVELUP
+
+Addons:
+  MythicMobs: false
+  Fabled: false
+  MagicSpells: false

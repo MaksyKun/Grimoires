@@ -66,7 +66,7 @@ public class GenreGui implements Listener {
         List<Inventory> inventories = new ArrayList<>();
         Inventory inv = null;
 
-        for (int i = 0; i < genres.size(); i++) {
+        for (int i = 0; i < allGenres.size(); i++) {
             int invDex = i % 27 + 9;
             if (invDex == 9) {
                 if (inv != null)
@@ -78,15 +78,15 @@ public class GenreGui implements Listener {
                 inv.setItem(41, ItemUT.nextPageItem);
                 invSlots = new HashMap<>();
             }
-            if (genres.get(i) == null)
+            if (allGenres.get(i) == null)
                 break;
-            Genre entry = genres.get(i);
+            Genre entry = allGenres.get(i);
             invSlots.put(invDex, entry);
             slots.put(inv, invSlots);
-            inv.setItem(invDex, PublicationModule.getPublicationCfg().getGenresGuiGenreIcon(entry));
+            inv.setItem(invDex, PublicationModule.getPublicationCfg().getGenresGuiGenreIcon(entry, genres.contains(entry)));
         }
 
-        if(inv != null) {
+        if (inv != null) {
             inventories.add(inv);
             inventories.add(inv);
         } else {
@@ -108,17 +108,21 @@ public class GenreGui implements Listener {
         int slot = event.getSlot();
         int size = inventories.size();
         switch (slot) {
-            case 4 -> {}
+            case 4 -> {
+            }
             case 36 -> editor.open();
             case 39 -> open(player, (size + invdex - 1) % size);
             case 41 -> open(player, (invdex + 1) % size);
             default -> {
                 if (!slots.isEmpty() && slots.get(inventories.get(invdex)).get(slot) != null) {
-                    if(event.isRightClick()) {
-                        Genre entry = slots.get(inventories.get(invdex)).get(slot);
+                    Genre entry = slots.get(inventories.get(invdex)).get(slot);
+                    if (genres.contains(entry)) {
                         removeGenre(entry);
-                        open(player);
+                    } else {
+                        addGenre(entry);
                     }
+                    editor.getGrimoire().setGenres(genres);
+                    open(player);
                 }
             }
         }

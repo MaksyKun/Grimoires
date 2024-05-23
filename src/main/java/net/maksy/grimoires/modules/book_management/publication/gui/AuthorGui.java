@@ -119,6 +119,7 @@ public class AuthorGui implements Listener {
                 if (!slots.isEmpty() && slots.get(inventories.get(invdex)).get(slot) != null) {
                     UUID entry = slots.get(inventories.get(invdex)).get(slot);
                     removeAuthor(entry);
+                    editor.getGrimoire().setAuthors(authors);
                     open(player);
                 }
             }

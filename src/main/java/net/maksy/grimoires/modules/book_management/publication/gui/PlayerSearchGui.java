@@ -52,9 +52,9 @@ public class PlayerSearchGui implements Listener {
 
         Player player = authorGui.getEditor().getPlayer();
         List<UUID> players = new ArrayList<>();
-        SearchType searchType = PublicationModule.getPlayerSearchMechanic().getSearchType();
+        SearchType searchType = PublicationModule.getPlayerSearchMechanic().searchType();
         if (searchType == SearchType.NEARBY) {
-            List<Entity> entities = player.getNearbyEntities(PublicationModule.getPlayerSearchMechanic().getDistance(), PublicationModule.getPlayerSearchMechanic().getDistance(), PublicationModule.getPlayerSearchMechanic().getDistance());
+            List<Entity> entities = player.getNearbyEntities(PublicationModule.getPlayerSearchMechanic().distance(), PublicationModule.getPlayerSearchMechanic().distance(), PublicationModule.getPlayerSearchMechanic().distance());
             for (Entity entity : entities) {
                 if (entity instanceof Player)
                     players.add(entity.getUniqueId());
@@ -100,6 +100,16 @@ public class PlayerSearchGui implements Listener {
         }
 
         this.inventories = inventories;
+
+        if(PublicationModule.getPlayerSearchMechanic().searchType() != SearchType.ALL) {
+            Bukkit.getScheduler().runTaskLater(Grimoires.getInstance(), () -> {
+                for (Inventory _inv : inventories)
+                    if (_inv.getViewers().contains(player)) {
+                        initialize();
+                        break;
+                    }
+            }, PublicationModule.getPlayerSearchMechanic().interval());
+        }
     }
 
     public void click(InventoryClickEvent event) {
@@ -117,12 +127,13 @@ public class PlayerSearchGui implements Listener {
             case 41 -> open(player, (invdex + 1) % size);
             default -> {
                 if (!slots.isEmpty() && slots.get(inventories.get(invdex)).get(slot) != null) {
-                    if(authorGui.getAuthors().size() >= PublicationModule.getPlayerSearchMechanic().getLimit()) {
-                        Translation.Publication_AuthorsLimitReached.sendMessage(player, new Replaceable("%limit%", String.valueOf(PublicationModule.getPlayerSearchMechanic().getLimit())));
+                    if(authorGui.getAuthors().size() >= PublicationModule.getPlayerSearchMechanic().limit()) {
+                        Translation.Publication_AuthorsLimitReached.sendMessage(player, new Replaceable("%limit%", String.valueOf(PublicationModule.getPlayerSearchMechanic().limit())));
                         return;
                     }
                     UUID entry = slots.get(inventories.get(invdex)).get(slot);
                     authorGui.addAuthor(entry);
+                    authorGui.getEditor().getGrimoire().setAuthors(authorGui.getAuthors());
                     open(player);
                 }
             }

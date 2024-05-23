@@ -114,15 +114,15 @@ public class PublicationCfg {
         return ItemUT.getItem(material, title, false, lore);
     }
 
-    public ItemStack getGenresGuiGenreIcon(Genre genre) {
+    public ItemStack getGenresGuiGenreIcon(Genre genre, boolean glowing) {
         Material material = Material.valueOf(config.getString("SubGui.Genres.Icons.Genre.Material", "BOOK").toUpperCase());
-        Component title = ChatUT.hexComp(config.getString("SubGui.Genres.Icons.Genre.Title", "&9Genre"));
+        Component title = ChatUT.hexComp(config.getString("SubGui.Genres.Icons.Genre.Title", "&9%name%").replace("%name%", genre.getName()));
         List<Component> lore = new ArrayList<>();
         for (String line : config.getStringList("SubGui.Genres.Icons.Genre.Lore"))
             lore.add(ChatUT.hexComp(line)
                     .replaceText(TextReplacementConfig.builder().match("%genre%").replacement(Component.text(genre.getName())).build())
             );
-        return ItemUT.getItem(material, title, false, lore);
+        return ItemUT.getItem(material, title, glowing, lore);
     }
 
     /* Pricing mechanic */

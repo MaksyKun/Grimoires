@@ -7,6 +7,7 @@ import net.maksy.grimoires.modules.book_management.storage.GrimoireRegistry;
 import net.maksy.grimoires.modules.book_management.storage.GrimoireStorage;
 import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.modules.book_management.publication.gui.PublicationEditor;
+import net.maksy.grimoires.modules.mysteries.DecryptionProcess;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class GrimoireCommand implements CommandExecutor, TabCompleter {
 
@@ -38,7 +40,7 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
 
         if(args.length == 1) {
             switch (args[0]) {
-                case "savebook" -> {
+                case "publish" -> {
                     ItemStack item = player.getInventory().getItemInMainHand();
                     if (item.getItemMeta() instanceof BookMeta book) {
                         if (GrimoireRegistry.isGrimoireExistent(player.getUniqueId(), book.getTitle())) {
@@ -65,6 +67,18 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
+        } else if(args.length == 3 && args[0].equals("decrypt")) {
+            int id = Integer.parseInt(args[1]);
+            Grimoire grimoire = Grimoires.sql().getBooksSQL().getBook(id);
+            if(grimoire.getEncryptionKeys().isEmpty()) {
+                return true;
+            }
+
+            String key = args[2];
+            if(!DecryptionProcess.Decryptions.containsKey(player.getUniqueId()) || DecryptionProcess.Decryptions.get(player.getUniqueId()).getGrimoire().getId() != id) {
+                new DecryptionProcess(player, grimoire);
+            }
+            DecryptionProcess.Decryptions.get(player.getUniqueId()).decrypt(key);
         }
         return true;
     }
@@ -73,7 +87,7 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         List<String> entries = new ArrayList<>();
         if(args.length == 1) {
-            if("savebook".startsWith(args[0])) entries.add("savebook");
+            if("publish".startsWith(args[0])) entries.add("publish");
             if("show".startsWith(args[0])) entries.add("show");
             if("get".startsWith(args[0])) entries.add("get");
         }
