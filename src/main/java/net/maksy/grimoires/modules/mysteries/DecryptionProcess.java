@@ -1,19 +1,20 @@
 package net.maksy.grimoires.modules.mysteries;
 
 import lombok.Getter;
-import net.kyori.adventure.text.TextReplacementConfig;
-import net.kyori.adventure.text.event.ClickEvent;
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
-import net.maksy.grimoires.utils.ChatUT;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.entity.Player;
 import org.intellij.lang.annotations.RegExp;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.*;
 import java.util.List;
 
-public class DecryptionProcess {
+public class DecryptionProcess implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 1L;
     public static Map<UUID, DecryptionProcess> Decryptions = new TreeMap<>();
 
     @Getter
@@ -27,7 +28,6 @@ public class DecryptionProcess {
         for(String key : grimoire.getEncryptionKeys()) {
             decryption.add(Pair.of(key, false));
         }
-        Decryptions.put(player.getUniqueId(), this);
     }
 
     public void decrypt(String key) {

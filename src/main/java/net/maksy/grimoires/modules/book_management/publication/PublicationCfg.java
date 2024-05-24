@@ -1,5 +1,6 @@
 package net.maksy.grimoires.modules.book_management.publication;
 
+import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.maksy.grimoires.Grimoires;
@@ -11,6 +12,7 @@ import net.maksy.grimoires.utils.ChatUT;
 import net.maksy.grimoires.utils.ItemUT;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,19 @@ public class PublicationCfg {
                     .replaceText(TextReplacementConfig.builder().match("%genres%").replacement(grimoire.getGenresComponent()).build())
                     .replaceText(TextReplacementConfig.builder().match("%published%").replacement(BookStorageModule.getBookStorageCfg().getDateTime(grimoire.getPublishedOn())).build())
             );
-        return ItemUT.getItem(Material.WRITTEN_BOOK, title, false, lore);
+        ItemStack bookItem = ItemUT.getItem(Material.WRITTEN_BOOK, title, false, lore);
+        BookMeta bookMeta = (BookMeta) bookItem.getItemMeta();
+
+        if (bookMeta != null) {
+            Book book = grimoire.getBook();
+            bookMeta.title(book.title());
+            bookMeta.author(book.author());
+            for (Component page : book.pages()) {
+                bookMeta.addPages(page);
+            }
+            bookItem.setItemMeta(bookMeta);
+        }
+        return bookItem;
     }
     /* Main publication Gui*/
     public Component getPublicationTitle() {

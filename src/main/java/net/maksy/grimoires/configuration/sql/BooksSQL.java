@@ -49,7 +49,7 @@ public class BooksSQL {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement insert = connection.prepareStatement("INSERT INTO " + TABLE + " VALUES(?, ?)")) {
             insert.setLong(1, getBookCount());
-            insert.setBytes(2, serializeObject(book));
+            insert.setBytes(2, SQLManager.serializeObject(book));
             insert.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -71,7 +71,7 @@ public class BooksSQL {
         if(book == null || book.getId() == -1) return;
         try (Connection connection = dataSource.getConnection();
              PreparedStatement update = connection.prepareStatement("UPDATE " + TABLE + " SET Book=? WHERE Id=?")) {
-            update.setBytes(1, serializeObject(book));
+            update.setBytes(1, SQLManager.serializeObject(book));
             update.setInt(2, book.getId());
             update.execute();
         } catch (SQLException e) {
@@ -134,43 +134,8 @@ public class BooksSQL {
     public Grimoire parseBook(ResultSet result) {
         try {
             byte[] bookBytes = result.getBytes("Book");
-            return (Grimoire) deserializeObject(bookBytes);
+            return (Grimoire) SQLManager.deserializeObject(bookBytes);
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public byte[] serializeObject(Object obj) {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-            oos.writeObject(obj);
-            return baos.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public Object deserializeObject(byte[] data) {
-        try (ByteArrayInputStream bais = new ByteArrayInputStream(data);
-             ObjectInputStream ois = new ObjectInputStream(bais) {
-                 @Override
-                 protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
-                     String className = desc.getName();
-                     // Translate old class names to new class names
-                     if (className.equals("net.maksy.grimoires.Grimoire") || className.equals("net.maksy.grimoires.modules.storage.Grimoire")) {
-                         className = "net.maksy.grimoires.modules.book_management.storage.Grimoire";
-                     }
-                     try {
-                         return Class.forName(className, false, getClass().getClassLoader());
-                     } catch (ClassNotFoundException ex) {
-                         return super.resolveClass(desc);
-                     }
-                 }
-             }) {
-            return ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;

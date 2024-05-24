@@ -4,10 +4,11 @@ import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.maksy.grimoires.modules.book_management.publication.PublicationModule;
 import net.maksy.grimoires.modules.mysteries.MysteryModule;
 import net.maksy.grimoires.utils.ChatUT;
+import net.maksy.grimoires.utils.PersistentMetaData;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.intellij.lang.annotations.RegExp;
@@ -169,14 +170,6 @@ public class Grimoire implements Serializable {
     }
 
     public ItemStack toItemStack() {
-        ItemStack item = new ItemStack(Material.WRITTEN_BOOK);
-        BookMeta meta = (BookMeta) item.getItemMeta();
-        Book book = getBook();
-        meta.title(book.title());
-        meta.author(book.author());
-        meta.pages(book.pages());
-        meta.lore();
-        item.setItemMeta(meta);
-        return item;
+        return PublicationModule.getPublicationCfg().getGrimoireItemstack(this);
     }
 }

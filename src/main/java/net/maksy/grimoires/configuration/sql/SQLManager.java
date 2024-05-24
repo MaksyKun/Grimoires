@@ -4,8 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.configuration.Config;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.logging.Level;
 
 public class SQLManager {
@@ -21,10 +20,12 @@ public class SQLManager {
     private static final int port = config.getSQLPort();
 
     private final BooksSQL booksSQL;
+    private final MysteriesSQL mysteriesSQL;
 
     public SQLManager() {
         connect();
         booksSQL = new BooksSQL(dataSource);
+        mysteriesSQL = new MysteriesSQL(dataSource);
     }
 
     public void connect() {
@@ -48,7 +49,47 @@ public class SQLManager {
         }
     }
 
+
+    public static byte[] serializeObject(Object obj) {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(obj);
+            return baos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Object deserializeObject(byte[] data) {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(data);
+             ObjectInputStream ois = new ObjectInputStream(bais) {
+                 @Override
+                 protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+                     String className = desc.getName();
+                     // Translate old class names to new class names
+                     if (className.equals("net.maksy.grimoires.Grimoire") || className.equals("net.maksy.grimoires.modules.storage.Grimoire")) {
+                         className = "net.maksy.grimoires.modules.book_management.storage.Grimoire";
+                     }
+                     try {
+                         return Class.forName(className, false, getClass().getClassLoader());
+                     } catch (ClassNotFoundException ex) {
+                         return super.resolveClass(desc);
+                     }
+                 }
+             }) {
+            return ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public BooksSQL getBooksSQL() {
         return booksSQL;
+    }
+
+    public MysteriesSQL mysteries() {
+        return mysteriesSQL;
     }
 }

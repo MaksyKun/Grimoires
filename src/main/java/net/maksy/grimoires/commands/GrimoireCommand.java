@@ -49,9 +49,6 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
                         }
                         Grimoire grimoire = new Grimoire(-1, List.of(player.getUniqueId()), book.getTitle(), " ", List.of(), book.pages().stream().map(Serializer::serialize).toList(), System.currentTimeMillis());
                         new PublicationEditor(player, grimoire).open();
-                        /*Grimoires.sql().getBooksSQL().addBook(grimoire);
-                        GrimoireRegistry.updateRegistry();
-                        Translation.Publication_BookPublished.sendMessage(player, new Replaceable("%title%", book.getTitle()));*/
                     }
                 }
                 case "show" -> new GrimoireStorage().open(player);
@@ -64,10 +61,11 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
                 int id = Integer.parseInt(args[1]);
                 Grimoire grimoire = Grimoires.sql().getBooksSQL().getBook(id);
                 player.openBook(grimoire.getBook());
+                player.getInventory().addItem(grimoire.toItemStack());
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
-        } else if(args.length == 3 && args[0].equals("decrypt")) {
+        } else if(args.length == 4 && args[0].equals("decrypt")) {
             int id = Integer.parseInt(args[1]);
             Grimoire grimoire = Grimoires.sql().getBooksSQL().getBook(id);
             if(grimoire.getEncryptionKeys().isEmpty()) {
@@ -76,7 +74,7 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
 
             String key = args[2];
             if(!DecryptionProcess.Decryptions.containsKey(player.getUniqueId()) || DecryptionProcess.Decryptions.get(player.getUniqueId()).getGrimoire().getId() != id) {
-                new DecryptionProcess(player, grimoire);
+                DecryptionProcess.Decryptions.put(player.getUniqueId(), Grimoires.sql().mysteries().getProcess(player, grimoire));
             }
             DecryptionProcess.Decryptions.get(player.getUniqueId()).decrypt(key);
         }
