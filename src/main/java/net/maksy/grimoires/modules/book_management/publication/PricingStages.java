@@ -17,8 +17,8 @@ public class PricingStages {
 
     public PricingStages(boolean enabled) {
         this.enabled = enabled;
-        if(enabled)
-            Grimoires.consoleMessage(ChatUT.hexComp("&6[Grimoires] &aPricing is enabled."));
+        /*if(enabled)
+            Grimoires.consoleMessage(ChatUT.hexComp("&6[Grimoires] &aPricing is enabled."));*/
     }
 
     public void addPrice(int pages, double price) {

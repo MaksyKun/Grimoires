@@ -85,7 +85,7 @@ public class SQLManager {
         return null;
     }
 
-    public BooksSQL getBooksSQL() {
+    public BooksSQL books() {
         return booksSQL;
     }
 

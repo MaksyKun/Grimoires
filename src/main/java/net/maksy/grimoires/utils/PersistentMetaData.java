@@ -27,12 +27,6 @@ public class PersistentMetaData {
     }
 
     public static int getNameSpaceInt(ItemMeta itemMeta, String key) {
-        if (!hasNameSpaceInt(itemMeta, key)) {
-            return -1;
-        }
-        if(itemMeta.getPersistentDataContainer().get(new NamespacedKey(plugin, key), PersistentDataType.INTEGER) == null) {
-            return -1;
-        }
         return itemMeta.getPersistentDataContainer().get(new NamespacedKey(plugin, key), PersistentDataType.INTEGER);
     }
 
@@ -46,7 +40,7 @@ public class PersistentMetaData {
         if (itemMeta == null) {
             return false;
         }
-        if(itemMeta.getPersistentDataContainer().get(new NamespacedKey(plugin, key), PersistentDataType.INTEGER) == null) {
+        if(itemMeta.getPersistentDataContainer().get(new NamespacedKey(plugin, key), PersistentDataType.INTEGER) == -1) {
             return false;
         }
         return itemMeta.getPersistentDataContainer().get(new NamespacedKey(plugin, key), PersistentDataType.INTEGER) > 0;

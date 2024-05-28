@@ -10,7 +10,9 @@ import net.maksy.grimoires.modules.book_management.storage.Genre;
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
 import net.maksy.grimoires.utils.ChatUT;
 import net.maksy.grimoires.utils.ItemUT;
+import net.maksy.grimoires.utils.PersistentMetaData;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
@@ -27,29 +29,33 @@ public class PublicationCfg {
     }
 
     public ItemStack getGrimoireItemstack(Grimoire grimoire) {
-        Component title = ChatUT.hexComp(config.getString("GrimoireItemstack.Title", "&9%title%").replace("%title%", grimoire.getTitle()));
+        Component title = ChatUT.hexComp(config.getString("PublishedBook.Title", "&9%title%").replace("%title%", grimoire.getTitle()));
         List<Component> lore = new ArrayList<>();
-        for (String line : config.getStringList("GrimoireItemstack.Lore"))
+        for (String line : config.getStringList("PublishedBook.Lore"))
             lore.add(ChatUT.hexComp(line)
                     .replaceText(TextReplacementConfig.builder().match("%title%").replacement(Component.text(grimoire.getTitle())).build())
                     .replaceText(TextReplacementConfig.builder().match("%authors%").replacement(grimoire.getAuthorsComponent()).build())
                     .replaceText(TextReplacementConfig.builder().match("%genres%").replacement(grimoire.getGenresComponent()).build())
-                    .replaceText(TextReplacementConfig.builder().match("%published%").replacement(BookStorageModule.getBookStorageCfg().getDateTime(grimoire.getPublishedOn())).build())
+                    .replaceText(TextReplacementConfig.builder().match("%date%").replacement(BookStorageModule.getBookStorageCfg().getDateTime(grimoire.getPublishedOn())).build())
             );
         ItemStack bookItem = ItemUT.getItem(Material.WRITTEN_BOOK, title, false, lore);
         BookMeta bookMeta = (BookMeta) bookItem.getItemMeta();
 
         if (bookMeta != null) {
-            Book book = grimoire.getBook();
+            Book book = grimoire.getBook(null);
             bookMeta.title(book.title());
             bookMeta.author(book.author());
             for (Component page : book.pages()) {
                 bookMeta.addPages(page);
             }
+            Grimoires.consoleMessage(ChatUT.hexComp("&cSetting namespace: " + grimoire.getId()));
+            PersistentMetaData.setNameSpace(bookMeta, "grimoire", String.valueOf(grimoire.getId()));
             bookItem.setItemMeta(bookMeta);
         }
+
         return bookItem;
     }
+
     /* Main publication Gui*/
     public Component getPublicationTitle() {
         return ChatUT.hexComp(config.getString("MainGui.Title", "Publication Editor"));

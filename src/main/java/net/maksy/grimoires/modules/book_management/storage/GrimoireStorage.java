@@ -158,7 +158,7 @@ public class GrimoireStorage implements Listener {
                 }
                 if (!itemSlots.isEmpty() && itemSlots.get(inventories.get(invdex)).get(slot) != null) {
                     Grimoire entry = itemSlots.get(inventories.get(invdex)).get(slot);
-                    player.openBook(entry.getBook());
+                    player.openBook(entry.getBook(player));
                 }
             }
         }

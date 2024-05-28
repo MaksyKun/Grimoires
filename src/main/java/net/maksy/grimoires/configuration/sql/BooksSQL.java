@@ -1,6 +1,7 @@
 package net.maksy.grimoires.configuration.sql;
 
 import com.zaxxer.hikari.HikariDataSource;
+import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.modules.book_management.storage.Genre;
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
 
@@ -13,7 +14,7 @@ import java.util.UUID;
 public class BooksSQL {
 
     private final HikariDataSource dataSource;
-    private final String TABLE = "Grimoires_books";
+    private final String TABLE = "Grimoires_Books";
 
     public BooksSQL(HikariDataSource dataSource) {
         this.dataSource = dataSource;
@@ -30,7 +31,7 @@ public class BooksSQL {
 
     public int getBookCount() {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement select = connection.prepareStatement("SELECT COUNT(Id) FROM " + TABLE)) {
+             PreparedStatement select = connection.prepareStatement("SELECT COUNT(*) FROM " + TABLE)) {
            ResultSet result = select.executeQuery();
             if(result.next()) {
                 return result.getInt(1);
@@ -46,9 +47,11 @@ public class BooksSQL {
             updateBook(book);
             return;
         }
+        int count = getBookCount();
+        book.setId(count);
         try (Connection connection = dataSource.getConnection();
              PreparedStatement insert = connection.prepareStatement("INSERT INTO " + TABLE + " VALUES(?, ?)")) {
-            insert.setLong(1, getBookCount());
+            insert.setLong(1, count);
             insert.setBytes(2, SQLManager.serializeObject(book));
             insert.execute();
         } catch (SQLException e) {
@@ -134,7 +137,9 @@ public class BooksSQL {
     public Grimoire parseBook(ResultSet result) {
         try {
             byte[] bookBytes = result.getBytes("Book");
-            return (Grimoire) SQLManager.deserializeObject(bookBytes);
+            Grimoire grimoire = (Grimoire) SQLManager.deserializeObject(bookBytes);
+            grimoire.setId(result.getInt("Id"));
+            return grimoire;
         } catch (SQLException e) {
             e.printStackTrace();
         }

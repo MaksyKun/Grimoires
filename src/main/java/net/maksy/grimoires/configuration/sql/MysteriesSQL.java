@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class MysteriesSQL {
 
@@ -29,26 +30,26 @@ public class MysteriesSQL {
         }
     }
 
-    public void addProcess(Player player, DecryptionProcess process) {
-        if(hasProcess(player, process)) {
-            updateProcess(player, process);
+    public void addProcess(UUID uuid, DecryptionProcess process) {
+        if(hasProcess(uuid, process)) {
+            updateProcess(uuid, process);
             return;
         }
         try (Connection connection = dataSource.getConnection();
              PreparedStatement insert = connection.prepareStatement("INSERT INTO " + TABLE + " VALUES(?, ?, ?)")) {
-            insert.setString(1, player.getUniqueId().toString());
+            insert.setString(1, uuid.toString());
             insert.setInt(2, process.grimoire.getId());
-            insert.setBytes(2, SQLManager.serializeObject(process));
+            insert.setBytes(3, SQLManager.serializeObject(process));
             insert.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void removeProcess(Player player, DecryptionProcess process) {
+    public void removeProcess(UUID uuid, DecryptionProcess process) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement("DELETE FROM " + TABLE + " WHERE UUID=? AND Id=?")) {
-            statement.setString(1, player.getUniqueId().toString());
+            statement.setString(1, uuid.toString());
             statement.setInt(2, process.grimoire.getId());
             statement.execute();
         } catch (SQLException e) {
@@ -56,10 +57,10 @@ public class MysteriesSQL {
         }
     }
 
-    public boolean hasProcess(Player player, DecryptionProcess process) {
+    public boolean hasProcess(UUID uuid, DecryptionProcess process) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement select = connection.prepareStatement("SELECT * FROM " + TABLE + " WHERE UUID=? AND Id=?")) {
-            select.setString(1, player.getUniqueId().toString());
+            select.setString(1, uuid.toString());
             select.setInt(2, process.grimoire.getId());
             ResultSet result = select.executeQuery();
             if (result.next()) {
@@ -71,11 +72,11 @@ public class MysteriesSQL {
         return false;
     }
 
-    public void updateProcess(Player player, DecryptionProcess process) {
+    public void updateProcess(UUID uuid, DecryptionProcess process) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement update = connection.prepareStatement("UPDATE " + TABLE + " SET Process=? WHERE UUID=? And Id=?")) {
             update.setBytes(1, SQLManager.serializeObject(process));
-            update.setString(2, player.getUniqueId().toString());
+            update.setString(2, uuid.toString());
             update.setInt(3, process.grimoire.getId());
             update.execute();
         } catch (SQLException e) {

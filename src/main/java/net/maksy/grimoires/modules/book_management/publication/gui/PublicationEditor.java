@@ -8,16 +8,13 @@ import net.maksy.grimoires.modules.book_management.publication.PublicationModule
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
 import net.maksy.grimoires.modules.book_management.storage.GrimoireRegistry;
 import net.maksy.grimoires.modules.mysteries.DecryptionProcess;
-import net.maksy.grimoires.modules.mysteries.MysteryModule;
 import net.maksy.grimoires.utils.ItemUT;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 public class PublicationEditor implements Listener {
 
@@ -66,7 +63,7 @@ public class PublicationEditor implements Listener {
                 grimoire.setGenres(genres.getGenres());
                 if (GrimoireRegistry.pricing().transact(player, grimoire.getPages().size())) {
                     grimoire.setEncryptionKeys(DecryptionProcess.getKeysOfGrimoire(grimoire));
-                    Grimoires.sql().getBooksSQL().addBook(grimoire);
+                    Grimoires.sql().books().addBook(grimoire);
                     GrimoireRegistry.updateRegistry();
                     player.closeInventory();
                     Translation.Publication_BookPublished.sendMessage(player, new Replaceable("%title%", grimoire.getTitle()));

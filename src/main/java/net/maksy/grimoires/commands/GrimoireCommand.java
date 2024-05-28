@@ -8,6 +8,7 @@ import net.maksy.grimoires.modules.book_management.storage.GrimoireStorage;
 import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.modules.book_management.publication.gui.PublicationEditor;
 import net.maksy.grimoires.modules.mysteries.DecryptionProcess;
+import net.maksy.grimoires.utils.ChatUT;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class GrimoireCommand implements CommandExecutor, TabCompleter {
 
@@ -59,23 +59,27 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
         } else if(args.length == 2 && args[0].equals("get")) {
             try {
                 int id = Integer.parseInt(args[1]);
-                Grimoire grimoire = Grimoires.sql().getBooksSQL().getBook(id);
-                player.openBook(grimoire.getBook());
+                Grimoire grimoire = Grimoires.sql().books().getBook(id);
+                player.openBook(grimoire.getBook(player));
                 player.getInventory().addItem(grimoire.toItemStack());
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
-        } else if(args.length == 4 && args[0].equals("decrypt")) {
+        } else if(args.length == 3 && args[0].equals("decrypt")) {
             int id = Integer.parseInt(args[1]);
-            Grimoire grimoire = Grimoires.sql().getBooksSQL().getBook(id);
-            if(grimoire.getEncryptionKeys().isEmpty()) {
+            Grimoire grimoire = GrimoireRegistry.getGrimoire(id);
+            if(grimoire == null) {
+                Grimoires.consoleMessage(ChatUT.hexComp("Grimoire not found"));
                 return true;
             }
 
             String key = args[2];
+            Grimoires.consoleMessage(ChatUT.hexComp("Decryption key: " + key));
             if(!DecryptionProcess.Decryptions.containsKey(player.getUniqueId()) || DecryptionProcess.Decryptions.get(player.getUniqueId()).getGrimoire().getId() != id) {
                 DecryptionProcess.Decryptions.put(player.getUniqueId(), Grimoires.sql().mysteries().getProcess(player, grimoire));
+                ChatUT.hexComp("Decryption process created");
             }
+            Grimoires.consoleMessage(ChatUT.hexComp("Decryption process started"));
             DecryptionProcess.Decryptions.get(player.getUniqueId()).decrypt(key);
         }
         return true;

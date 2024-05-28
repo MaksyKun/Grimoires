@@ -17,6 +17,7 @@ public class MysteriesCfg {
                 config.getString("Encryption.Indicator"),
                 config.getInt("Encryption.WordLimit"),
                 config.getString("Encryption.Design"),
+                config.getString("Encryption.SolvedColor"),
                 config.getBoolean("Encryption.ResetOnFail"));
     }
 }

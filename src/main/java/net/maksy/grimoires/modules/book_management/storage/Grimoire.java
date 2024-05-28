@@ -1,16 +1,17 @@
 package net.maksy.grimoires.modules.book_management.storage;
 
+import lombok.Setter;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.maksy.grimoires.modules.book_management.publication.PublicationModule;
+import net.maksy.grimoires.modules.mysteries.DecryptionProcess;
 import net.maksy.grimoires.modules.mysteries.MysteryModule;
 import net.maksy.grimoires.utils.ChatUT;
-import net.maksy.grimoires.utils.PersistentMetaData;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.intellij.lang.annotations.RegExp;
 
 import java.io.Serial;
@@ -25,7 +26,7 @@ public class Grimoire implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /* Common variables in use */
-    private final int id;
+    private int id;
     private List<UUID> authors;
     private String title;
     private String description;
@@ -36,8 +37,11 @@ public class Grimoire implements Serializable {
 
     /*  Variables for Mystery Features
         requires them to be enabled */
+    @Setter
     private boolean exactOrder;
+    @Setter
     private List<String> encryptionKeys;
+    @Setter
     private List<String> commands;
 
     public Grimoire(int id, List<UUID> authors, String title, String description, List<Genre> genres, List<String> pages, long publishedOn) {
@@ -52,6 +56,10 @@ public class Grimoire implements Serializable {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public List<UUID> getAuthors() {
@@ -118,27 +126,15 @@ public class Grimoire implements Serializable {
         return exactOrder;
     }
 
-    public void setExactOrder(boolean exactOrder) {
-        this.exactOrder = exactOrder;
-    }
-
     public List<String> getEncryptionKeys() {
         return encryptionKeys;
-    }
-
-    public void setEncryptionKeys(List<String> encryptionKeys) {
-        this.encryptionKeys = encryptionKeys;
     }
 
     public List<String> getCommands() {
         return commands;
     }
 
-    public void setCommands(List<String> commands) {
-        this.commands = commands;
-    }
-
-    public Book getBook() {
+    public Book getBook(Player player) {
         Book.Builder book = Book.builder();
         book.title(ChatUT.hexComp(title));
         String authorsString = authors.stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName()).reduce((a, b) -> a + ", " + b).orElse("");
@@ -157,7 +153,20 @@ public class Grimoire implements Serializable {
                     String[] words = page.split(" ");
                     for(@RegExp String word : words) {
                         if(word.startsWith(indicator)) {
-                            TextReplacementConfig replacement = TextReplacementConfig.builder().match(word).replacement(ChatUT.hexComp(MysteryModule.getEncryptionAlgorithm().design().replace("%word%", word.replace(indicator, ""))).clickEvent(ClickEvent.runCommand("grimoires decrypt " + id + " " + word.replace(indicator, "")))).build();
+                            String solvedColor = "";
+                            boolean isDecrypted = false;
+                            if(player != null) {
+                                DecryptionProcess process = DecryptionProcess.get(player, this);
+                                isDecrypted = process.isDecrypted(word.replace(indicator, ""), amount.get());
+                                if(isDecrypted) {
+                                    solvedColor = MysteryModule.getMysteriesCfg().getEncryptionAlgorithm().solvedColor();
+                                }
+                            }
+                            Component _component = ChatUT.hexComp(solvedColor + MysteryModule.getEncryptionAlgorithm().design().replace("%word%", word.replace(indicator, "")));
+                            if(!isDecrypted) {
+                                _component = _component.clickEvent(ClickEvent.runCommand("/grimoire decrypt " + id + " " + word.replace(indicator, "")));
+                            }
+                            TextReplacementConfig replacement = TextReplacementConfig.builder().match(word).replacement(_component).build();
                             component = component.replaceText(replacement);
                             amount.getAndIncrement();
                         }

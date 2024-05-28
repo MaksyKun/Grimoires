@@ -15,7 +15,7 @@ public class GrimoireRegistry {
         Registry.clear();
         pricingStages = PublicationModule.getPublicationCfg().getPricingStages();
 
-        List<Grimoire> entries = Grimoires.sql().getBooksSQL().getBooks(null, null);
+        List<Grimoire> entries = Grimoires.sql().books().getBooks(null, null);
         Registry.putIfAbsent(BookStorageModule.getGenreCfg().getDefaultGenre(), new ArrayList<>());
         for (Grimoire grimoire : entries) {
             if(grimoire.getGenres().isEmpty()) {
@@ -80,6 +80,17 @@ public class GrimoireRegistry {
             grimoires.addAll(list);
         }
         return grimoires;
+    }
+
+    public static Grimoire getGrimoire(int id) {
+        for (List<Grimoire> list : Registry.values()) {
+            for (Grimoire grimoire : list) {
+                if (grimoire.getId() == id) {
+                    return grimoire;
+                }
+            }
+        }
+        return null;
     }
 
     public static boolean isGrimoireExistent(UUID uuid, String title) {
