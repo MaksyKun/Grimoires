@@ -1,7 +1,8 @@
 <p align="center">
   <img src="images/logo.png" />
 </p>
-  # Introduction into Grimoires
+
+# Introduction into Grimoires
 **Grimoires** is a plugin that uses books with the aim of utilising their functionality to its limits.
 Immerse yourself in the magical world of books and allow Minecraft to go beyond the limits of what 
 was previously possible with books.
