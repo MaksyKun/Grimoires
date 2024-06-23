@@ -10,5 +10,5 @@ was previously possible with books.
 
 ## W.I.P. Features
 ☄️Add a way to create custom books with mysteries inside of it (decryption tasks for rewards) <br>
-☄️Interact and integrate with other plugins like Fabled, MythicMobs and MagicSpells
-☄️Use the API to fully customize your options with Grimoires
+☄️Interact and integrate with other plugins like Fabled, MythicMobs and MagicSpells<br>
+☄️Use the API to fully customize your options with Grimoires<br>
