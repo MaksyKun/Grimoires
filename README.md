@@ -1,5 +1,5 @@
 # Introduction into Grimoires
-![](/images/logo.png)-
+![](/images/logo.png)<br>
 Grimoires is a plugin that uses books with the aim of utilising their functionality to its limits.
 Immerse yourself in the magical world of books and allow Minecraft to go beyond the limits of what 
 was previously possible with books.
