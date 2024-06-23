@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/logo.png" alt="A logo of Grimoires" />
+  <img src="images/logo.png" alt="A logo of Grimoires" style="width: 64px; height: 64px;" />
 
   # Introduction into Grimoires
 Grimoires is a plugin that uses books with the aim of utilising their functionality to its limits.
