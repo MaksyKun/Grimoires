@@ -1,3 +1,4 @@
+<p align="center">
 # Introduction into Grimoires
 ![](/images/logo.png)<br>
 Grimoires is a plugin that uses books with the aim of utilising their functionality to its limits.
@@ -13,3 +14,4 @@ was previously possible with books.
 ☄️Add a way to create custom books with mysteries inside of it (decryption tasks for rewards) <br>
 ☄️Interact and integrate with other plugins like Fabled, MythicMobs and MagicSpells<br>
 ☄️Use the API to fully customize your options with Grimoires<br>
+</p>
