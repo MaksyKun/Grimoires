@@ -1,6 +1,6 @@
 <p align="center">
   <img src="images/logo.png" />
-
+</p>
   # Introduction into Grimoires
 **Grimoires** is a plugin that uses books with the aim of utilising their functionality to its limits.
 Immerse yourself in the magical world of books and allow Minecraft to go beyond the limits of what 
@@ -15,5 +15,3 @@ was previously possible with books.
 ☄️Add a way to create custom books with mysteries inside of it (decryption tasks for rewards) <br>
 ☄️Interact and integrate with other plugins like Fabled, MythicMobs and MagicSpells<br>
 ☄️Use the API to fully customize your options with Grimoires<br>
-
-</p>
