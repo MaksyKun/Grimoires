@@ -12,6 +12,7 @@ import net.maksy.grimoires.utils.ChatUT;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.intellij.lang.annotations.RegExp;
 
 import java.io.Serial;
@@ -164,7 +165,7 @@ public class Grimoire implements Serializable {
                             }
                             Component _component = ChatUT.hexComp(solvedColor + MysteryModule.getEncryptionAlgorithm().design().replace("%word%", word.replace(indicator, "")));
                             if(!isDecrypted) {
-                                _component = _component.clickEvent(ClickEvent.runCommand("/grimoire decrypt " + id + " " + word.replace(indicator, "")));
+                                _component = _component.clickEvent(ClickEvent.runCommand("/grimoire decrypt " + id + " " + pages.indexOf(page) + " " + word.replace(indicator, "")));
                             }
                             TextReplacementConfig replacement = TextReplacementConfig.builder().match(word).replacement(_component).build();
                             component = component.replaceText(replacement);
@@ -180,5 +181,25 @@ public class Grimoire implements Serializable {
 
     public ItemStack toItemStack() {
         return PublicationModule.getPublicationCfg().getGrimoireItemstack(this);
+    }
+
+    public void openPage(Player player, int page) {
+        Book.Builder book = Book.builder();
+        Component _page = ChatUT.hexComp(pages.get(page));
+    }
+
+    public void editPage(Player player, int page) {
+        Book.Builder book = Book.builder();
+        Component _page = ChatUT.hexComp(pages.get(page));
+    }
+
+    public void deletePage(Player player, int page) {
+        pages.remove(page);
+        editPage(player, page - 1);
+    }
+
+    public void addPage(Player player) {
+        pages.add("");
+        editPage(player, pages.size());
     }
 }

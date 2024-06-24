@@ -2,7 +2,7 @@ name: Grimoires
 version: '${project.version}'
 main: net.maksy.grimoires.Grimoires
 api-version: '1.20'
-softdepend: [Vault, HeadDatabase]
+softdepend: [Vault, HeadDatabase, ProtocolLib]
 commands:
   grimoire:
     description: Use the grimoire plugin

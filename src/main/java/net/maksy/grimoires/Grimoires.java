@@ -1,5 +1,12 @@
 package net.maksy.grimoires;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.reflect.StructureModifier;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.maksy.grimoires.commands.GrimoireCommand;

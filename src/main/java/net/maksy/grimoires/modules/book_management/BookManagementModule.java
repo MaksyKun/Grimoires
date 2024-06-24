@@ -1,5 +1,6 @@
 package net.maksy.grimoires.modules.book_management;
 
+import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.configuration.ModuleInstance;
 import net.maksy.grimoires.modules.book_management.publication.PublicationModule;
 import net.maksy.grimoires.modules.book_management.storage.BookStorageModule;
@@ -20,6 +21,7 @@ public class BookManagementModule implements ModuleInstance {
         registerModule(new PublicationModule());
         registerModule(new BookStorageModule());
 
+        Grimoires.registerListener(new PageLayoutHandler());
         loadSubModules();
     }
 

@@ -1,0 +1,38 @@
+DefaultDesign:
+  Title: "&9%title%"
+  Lore:
+    - "&7Authors: &a%authors%"
+    - "&7Published on: &a%date%"
+    - " "
+    - "&7Genres: &a%genres%"
+
+Paging:
+  # Custom paging modifies the books to look cleaner for mystery solving features.
+  # However, using CustomPaging will block the last row of a book in order
+  # to insert the navigation. The book will always show 1 page that is newly generated.
+  CustomPaging: false
+  MaxPages: 150
+  PageComponents:
+    PreviousPage: "&4&m<--"
+    NextPage: "&4&m-->"
+    AddPage: "&2&a+"
+    DeletePage: "&4&c-"
+  PageComponentHover:
+    PreviousPage: "&7Go to the previous page."
+    NextPage: "&7Go to the next page."
+    AddPage: "&7Add a new page."
+    DeletePage: "&7Delete the current page."
+  PageLayouts:
+    # <-- [2/55] -->
+    Default: " %previous%&0 [%page%/%max_page%] %next%"
+    # <-- [2/55] --> - +
+    Edit: " %previous%&0 [%page%/%max_page%] %next% %delete% %add%"
+Editor:
+  Title: "&9Book Editor"
+  Lore:
+    - "&7Current Book: &a%title%"
+    - "&7Amount of Pages: &a%pages%"
+    - "&7Currently Editing: &aPage %page%"
+  ViewingMessage: "&9&l✉ &7Save edited page and preview the all."
+  AddingMessage: "&2&l+ &7Save edited page and add a new one"
+  SaveMessage: "&e&l✎ &7Save edited page and close the editor."

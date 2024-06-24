@@ -2,6 +2,7 @@ package net.maksy.grimoires.hooks;
 
 public enum HookType {
     HeadDatabase("HeadDatabase"),
+    ProtocolLib("ProtocolLib"),
     Vault("Vault");
 
     private final String pluginName;
