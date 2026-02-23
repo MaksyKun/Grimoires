@@ -1,12 +1,16 @@
 package net.maksy.grimoires.modules.mysteries;
 
 import lombok.Getter;
+import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.configuration.ModuleInstance;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MysteryModule implements ModuleInstance {
+public class MysteryModule implements ModuleInstance, Listener {
 
     @Getter
     private static MysteriesCfg mysteriesCfg;
@@ -19,6 +23,7 @@ public class MysteryModule implements ModuleInstance {
     public void loadModule() {
         mysteriesCfg = new MysteriesCfg();
         encryptionAlgorithm = mysteriesCfg.getEncryptionAlgorithm();
+        Grimoires.registerListener(this);
     }
 
     @Override
@@ -26,6 +31,7 @@ public class MysteryModule implements ModuleInstance {
         for (ModuleInstance module : modules)
             module.unloadModule();
         modules.clear();
+        DecryptionProcess.clearAll();
     }
 
     @Override
@@ -37,5 +43,10 @@ public class MysteryModule implements ModuleInstance {
     @Override
     public void registerModule(ModuleInstance module) {
         modules.add(module);
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        DecryptionProcess.remove(event.getPlayer().getUniqueId());
     }
 }
