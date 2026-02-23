@@ -6,3 +6,7 @@ SQL:
   Username: "root"
   Password: "password"
 
+# Set to true to print GUI session register/unregister events to the console.
+# Useful for verifying open/close symmetry during testing.
+Debug: false
+

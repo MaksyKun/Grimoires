@@ -2,6 +2,8 @@ package net.maksy.grimoires.modules.book_management.publication.gui;
 
 import net.kyori.adventure.text.Component;
 import net.maksy.grimoires.Grimoires;
+import net.maksy.grimoires.modules.GuiSession;
+import net.maksy.grimoires.modules.GuiSessionManager;
 import net.maksy.grimoires.modules.book_management.publication.PublicationModule;
 import net.maksy.grimoires.modules.book_management.storage.BookStorageModule;
 import net.maksy.grimoires.modules.book_management.storage.Genre;
@@ -11,15 +13,17 @@ import net.maksy.grimoires.utils.ItemUT;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class GenreGui implements Listener {
+public class GenreGui implements Listener, GuiSession {
 
     private final PublicationEditor editor;
 
@@ -30,13 +34,14 @@ public class GenreGui implements Listener {
 
     private final HashMap<Inventory, HashMap<Integer, Genre>> slots = new HashMap<>();
 
+    private boolean registered = false;
+
     public GenreGui(PublicationEditor editor, List<Genre> initialGenres) {
         this.allGenres = BookStorageModule.getGenreCfg().getAllGenres();
         this.editor = editor;
         this.genres = new ArrayList<>(initialGenres);
         this.title = PublicationModule.getPublicationCfg().getPGenresGuiTitle();
         inventories = List.of(InventoryUT.createFilledInventory(null, title, 45, Material.GRAY_STAINED_GLASS_PANE));
-        Grimoires.registerListener(this);
     }
 
     public List<Genre> getGenres() {
@@ -52,12 +57,27 @@ public class GenreGui implements Listener {
     }
 
     public void open(Player player) {
+        if (!registered) {
+            Grimoires.registerListener(this);
+            registered = true;
+        }
         initialize();
         open(player, 0);
     }
 
     public void open(Player player, int page) {
-        player.openInventory(inventories.get(page) != null ? inventories.get(page) : inventories.get(page - 1));
+        Inventory inv = inventories.get(page) != null ? inventories.get(page) : inventories.get(page - 1);
+        GuiSessionManager.get().track(inv, this);
+        player.openInventory(inv);
+    }
+
+    @Override
+    public void close() {
+        HandlerList.unregisterAll(this);
+        registered = false;
+        GuiSessionManager.get().untrack(this);
+        inventories = Collections.emptyList();
+        slots.clear();
     }
 
     private void initialize() {

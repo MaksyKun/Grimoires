@@ -69,4 +69,9 @@ public class Config {
     public Action getBookshelfAction() {
         return Action.valueOf(config.getString("ChiseledBookShelfGui.Action", "RIGHT_CLICK_BLOCK").toUpperCase());
     }
+
+    /* Debug */
+    public boolean isDebugEnabled() {
+        return config.getBoolean("Debug", false);
+    }
 }
