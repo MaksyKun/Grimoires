@@ -13,6 +13,13 @@ public enum Translation {
 
     HoverPlaceholder("HoverPlaceholder"),
 
+    Command_NoPermission("Command.NoPermission"),
+    Command_PlayerOnly("Command.PlayerOnly"),
+    Command_GrimoireNotFound("Command.GrimoireNotFound"),
+    Command_InvalidPage("Command.InvalidPage"),
+    Command_CustomPagingDisabled("Command.CustomPagingDisabled"),
+    Command_Usage("Command.Usage"),
+
     Publication_BookPublished("Publication.BookPublished"),
     Publication_BookAlreadyPublished("Publication.BookAlreadyPublished"),
     Publication_BookUnpublished("Publication.BookUnpublished"),

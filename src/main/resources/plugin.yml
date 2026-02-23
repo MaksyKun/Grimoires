@@ -6,7 +6,17 @@ softdepend: [Vault, HeadDatabase, ProtocolLib]
 commands:
   grimoire:
     description: Use the grimoire plugin
-    usage: /grimoire
+    usage: /grimoire <show|read <id> <page>|edit <id> <page>|add <id>|delete <id> <page>|give-editor>
     permission: grimoires.use
     default: true
     aliases: [gri, books]
+permissions:
+  grimoires.use:
+    description: Grants access to basic grimoire commands (show, read).
+    default: true
+  grimoires.admin.edit:
+    description: Grants access to grimoire editing commands (edit, add, delete).
+    default: op
+  grimoires.admin.give-editor:
+    description: Grants access to the give-editor command.
+    default: op
