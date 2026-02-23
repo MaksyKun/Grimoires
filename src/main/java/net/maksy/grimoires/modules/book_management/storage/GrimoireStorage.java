@@ -66,7 +66,12 @@ public class GrimoireStorage implements Listener, GuiSession {
     }
 
     public void open(Player player, int page) {
-        Inventory inv = inventories.get(page) != null ? inventories.get(page) : inventories.get(page - 1);
+        if (inventories.isEmpty()) {
+            player.sendMessage(Component.text("This grimoire has no pages to display."));
+            return;
+        }
+        int safePage = Math.max(0, Math.min(page, inventories.size() - 1));
+        Inventory inv = inventories.get(safePage);
         GuiSessionManager.get().track(inv, this);
         player.openInventory(inv);
     }
