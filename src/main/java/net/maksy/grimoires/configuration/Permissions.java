@@ -1,9 +1,12 @@
 package net.maksy.grimoires.configuration;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public enum Permissions {
-    Use_Grimoires("grimoires.use");
+    Use_Grimoires("grimoires.use"),
+    Admin_Edit("grimoires.admin.edit"),
+    Admin_GiveEditor("grimoires.admin.give-editor");
 
     private final String permission;
 
@@ -13,5 +16,9 @@ public enum Permissions {
 
     public boolean hasPermission(Player player) {
         return player.hasPermission(permission);
+    }
+
+    public boolean hasPermission(CommandSender sender) {
+        return sender.hasPermission(permission);
     }
 }

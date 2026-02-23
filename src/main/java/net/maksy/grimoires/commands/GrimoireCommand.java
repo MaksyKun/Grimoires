@@ -3,6 +3,9 @@ package net.maksy.grimoires.commands;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.configuration.GrimoireDesignCfg;
+import net.maksy.grimoires.configuration.Permissions;
+import net.maksy.grimoires.configuration.translation.Replaceable;
+import net.maksy.grimoires.configuration.translation.Translation;
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
 import net.maksy.grimoires.modules.book_management.storage.GrimoireRegistry;
 import net.maksy.grimoires.modules.book_management.storage.GrimoireStorage;
@@ -28,106 +31,91 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0) {
-            if (!(sender instanceof Player player)) return true;
-            // TODO help message
-
-            simulateEditPage(player, null, 0);
+            Translation.Command_Usage.sendMessage(sender);
             return true;
         }
 
-        if (!(sender instanceof Player player)) {
-            // TODO console message
-            return true;
-        }
+        String subcommand = args[0].toLowerCase();
 
-        switch (args.length) {
-            case 1 -> {
-                if (args[0].equalsIgnoreCase("show")) {
-                    new GrimoireStorage().open(player);
-                } else if(args[0].equalsIgnoreCase("give-editor")) {
-                    if(!GrimoireDesignCfg.isCustomPagingEnabled) {
-                        // TODO Translation: Custom paging is disabled
-                        return true;
-                    }
+        switch (subcommand) {
+            case "show" -> {
+                if (!(sender instanceof Player player)) {
+                    Translation.Command_PlayerOnly.sendMessage(sender);
+                    return true;
                 }
+                if (!Permissions.Use_Grimoires.hasPermission(player)) {
+                    Translation.Command_NoPermission.sendMessage(sender);
+                    return true;
+                }
+                new GrimoireStorage().open(player);
             }
-            case 3 -> {
-                int id, page;
+            case "give-editor" -> {
+                if (!(sender instanceof Player player)) {
+                    Translation.Command_PlayerOnly.sendMessage(sender);
+                    return true;
+                }
+                if (!Permissions.Admin_GiveEditor.hasPermission(player)) {
+                    Translation.Command_NoPermission.sendMessage(sender);
+                    return true;
+                }
+                if (!GrimoireDesignCfg.isCustomPagingEnabled) {
+                    Translation.Command_CustomPagingDisabled.sendMessage(sender);
+                    return true;
+                }
+                simulateEditPage(player, null, 0);
+            }
+            case "read", "edit", "add", "delete" -> {
+                if (!(sender instanceof Player player)) {
+                    Translation.Command_PlayerOnly.sendMessage(sender);
+                    return true;
+                }
+                Permissions perm = subcommand.equals("read") ? Permissions.Use_Grimoires : Permissions.Admin_Edit;
+                if (!perm.hasPermission(player)) {
+                    Translation.Command_NoPermission.sendMessage(sender);
+                    return true;
+                }
+                boolean needsPage = !subcommand.equals("add");
+                int requiredArgs = needsPage ? 3 : 2;
+                if (args.length != requiredArgs) {
+                    Translation.Command_Usage.sendMessage(sender);
+                    return true;
+                }
+                int id;
                 try {
                     id = Integer.parseInt(args[1]);
-                    page = Integer.parseInt(args[2]);
                 } catch (NumberFormatException e) {
+                    Translation.Command_Usage.sendMessage(sender);
                     return true;
                 }
                 Grimoire grimoire = GrimoireRegistry.getGrimoire(id);
-
                 if (grimoire == null) {
-                    // TODO Translation: Grimoire not found
+                    Translation.Command_GrimoireNotFound.sendMessage(sender, new Replaceable("%id%", String.valueOf(id)));
                     return true;
                 }
-                if (page < 0 || page >= grimoire.getPages().size()) {
-                    // TODO Translation: Page does not exist
-                    return true;
-                }
-
-                if (args[0].equalsIgnoreCase("read")) {
-                    grimoire.openPage(player, page);
-                } else if (args[0].equalsIgnoreCase("edit")) {
-                    grimoire.editPage(player, page);
-                } else if (args[0].equalsIgnoreCase("add")) {
-                    grimoire.deletePage(player, page);
-                } else if (args[0].equalsIgnoreCase("delete")) {
+                if (subcommand.equals("add")) {
                     grimoire.addPage(player);
-                }
-            }
-        }
-
-        /*
-        if(args.length == 1) {
-            switch (args[0]) {
-                case "publish" -> {
-                    ItemStack item = player.getInventory().getItemInMainHand();
-                    if (item.getItemMeta() instanceof BookMeta book) {
-                        if (GrimoireRegistry.isGrimoireExistent(player.getUniqueId(), book.getTitle())) {
-                            Translation.Publication_BookAlreadyPublished.sendMessage(player);
-                            return true;
-                        }
-                        Grimoire grimoire = new Grimoire(-1, List.of(player.getUniqueId()), book.getTitle(), " ", List.of(), book.pages().stream().map(Serializer::serialize).toList(), System.currentTimeMillis());
-                        new PublicationEditor(player, grimoire).open();
+                } else {
+                    int page;
+                    try {
+                        page = Integer.parseInt(args[2]);
+                    } catch (NumberFormatException e) {
+                        Translation.Command_Usage.sendMessage(sender);
+                        return true;
+                    }
+                    if (page < 0 || page >= grimoire.getPages().size()) {
+                        Translation.Command_InvalidPage.sendMessage(sender, new Replaceable("%page%", String.valueOf(page)));
+                        return true;
+                    }
+                    switch (subcommand) {
+                        case "read" -> grimoire.openPage(player, page);
+                        case "edit" -> grimoire.editPage(player, page);
+                        case "delete" -> grimoire.deletePage(player, page);
                     }
                 }
-                case "show" -> new GrimoireStorage().open(player);
-                default -> {
-                }
-                // TODO help message
             }
-        } else if(args.length == 2 && args[0].equals("get")) {
-            try {
-                int id = Integer.parseInt(args[1]);
-                Grimoire grimoire = Grimoires.sql().books().getBook(id);
-                player.openBook(grimoire.getBook(player));
-                player.getInventory().addItem(grimoire.toItemStack());
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-        } else if(args.length == 4 && args[0].equals("decrypt")) {
-            int id = Integer.parseInt(args[1]);
-            int page = Integer.parseInt(args[2]);
-            Grimoire grimoire = GrimoireRegistry.getGrimoire(id);
-            if(grimoire == null) {
-                Grimoires.consoleMessage(ChatUT.hexComp("Grimoire not found"));
-                return true;
-            }
+            default -> Translation.Command_Usage.sendMessage(sender);
+        }
 
-            String key = args[3];
-            Grimoires.consoleMessage(ChatUT.hexComp("Decryption key: " + key));
-            if(!DecryptionProcess.Decryptions.containsKey(player.getUniqueId()) || DecryptionProcess.Decryptions.get(player.getUniqueId()).getGrimoire().getId() != id) {
-                DecryptionProcess.Decryptions.put(player.getUniqueId(), Grimoires.sql().mysteries().getProcess(player, grimoire));
-                ChatUT.hexComp("Decryption process created");
-            }
-            Grimoires.consoleMessage(ChatUT.hexComp("Decryption process started"));
-            DecryptionProcess.Decryptions.get(player.getUniqueId()).decrypt(key);
-         */
         return true;
     }
 
@@ -174,3 +162,4 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
         }.runTaskLater(Grimoires.getInstance(), 1L); // Delay by 1 tick to ensure inventory update
     }
 }
+
