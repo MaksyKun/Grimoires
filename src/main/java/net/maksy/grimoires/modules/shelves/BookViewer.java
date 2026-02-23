@@ -22,7 +22,7 @@ public class BookViewer implements Listener {
         if (!Grimoires.getConfiguration().isChiseledBookshelfGuiEnabled()) return;
         ItemStack item = event.getItem();
 
-        if (item == null || (item.getType() == Material.WRITTEN_BOOK || item.getType() == Material.WRITABLE_BOOK || item.getType() == Material.WRITTEN_BOOK || item.getType() == Material.ENCHANTED_BOOK || item.getType() == Material.KNOWLEDGE_BOOK))
+        if (item == null || (item.getType() == Material.WRITTEN_BOOK || item.getType() == Material.WRITABLE_BOOK || item.getType() == Material.ENCHANTED_BOOK || item.getType() == Material.KNOWLEDGE_BOOK))
             return;
         Block block = event.getClickedBlock();
         if (block == null) return;

@@ -88,7 +88,8 @@ public class BooksSQL {
              PreparedStatement select = connection.prepareStatement("SELECT * FROM " + TABLE)) {
             ResultSet result = select.executeQuery();
             while (result.next()) {
-                books.add(parseBook(result));
+                Grimoire grimoire = parseBook(result);
+                if (grimoire != null) books.add(grimoire);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -96,25 +97,13 @@ public class BooksSQL {
 
         if(genre != null || author != null) {
             if (genre != null && author != null) {
-                books.forEach(book -> {
-                    if(!book.getGenres().contains(genre) || !book.getAuthors().contains(author)) {
-                        books.remove(book);
-                    }
-                });
+                books.removeIf(book -> !book.getGenres().contains(genre) || !book.getAuthors().contains(author));
             }
             else if (genre != null) {
-                books.forEach(book -> {
-                    if(!book.getGenres().contains(genre)) {
-                        books.remove(book);
-                    }
-                });
+                books.removeIf(book -> !book.getGenres().contains(genre));
             }
             else {
-                books.forEach(book -> {
-                    if(!book.getAuthors().contains(author)) {
-                        books.remove(book);
-                    }
-                });
+                books.removeIf(book -> !book.getAuthors().contains(author));
             }
         }
         return books;
