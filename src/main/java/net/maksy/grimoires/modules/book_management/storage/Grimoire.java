@@ -191,20 +191,28 @@ public class Grimoire implements Serializable {
     public void openPage(Player player, int page) {
         Book.Builder book = Book.builder();
         Component _page = ChatUT.hexComp(pages.get(page));
+        book.pages(_page);
+        player.openBook(book.build());
     }
 
     public void editPage(Player player, int page) {
+        // TODO: Implement full page editing with save-back when custom paging is enabled
         Book.Builder book = Book.builder();
         Component _page = ChatUT.hexComp(pages.get(page));
+        book.pages(_page);
+        player.openBook(book.build());
     }
 
     public void deletePage(Player player, int page) {
         pages.remove(page);
-        editPage(player, page - 1);
+        int prevPage = page - 1;
+        if (prevPage >= 0 && prevPage < pages.size()) {
+            editPage(player, prevPage);
+        }
     }
 
     public void addPage(Player player) {
         pages.add("");
-        editPage(player, pages.size());
+        editPage(player, pages.size() - 1);
     }
 }

@@ -1,23 +1,19 @@
 package net.maksy.grimoires.commands;
 
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.configuration.GrimoireDesignCfg;
 import net.maksy.grimoires.configuration.Permissions;
 import net.maksy.grimoires.configuration.translation.Replaceable;
 import net.maksy.grimoires.configuration.translation.Translation;
+import net.maksy.grimoires.modules.book_management.BookManagementModule;
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
 import net.maksy.grimoires.modules.book_management.storage.GrimoireRegistry;
 import net.maksy.grimoires.modules.book_management.storage.GrimoireStorage;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,7 +58,7 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
                     Translation.Command_CustomPagingDisabled.sendMessage(sender);
                     return true;
                 }
-                simulateEditPage(player, null, 0);
+                player.getInventory().addItem(BookManagementModule.getDesignCfg().getGrimoireEditor(null, 0));
             }
             case "read", "edit", "add", "delete" -> {
                 if (!(sender instanceof Player player)) {
@@ -72,6 +68,10 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
                 Permissions perm = subcommand.equals("read") ? Permissions.Use_Grimoires : Permissions.Admin_Edit;
                 if (!perm.hasPermission(player)) {
                     Translation.Command_NoPermission.sendMessage(sender);
+                    return true;
+                }
+                if (!subcommand.equals("read") && !GrimoireDesignCfg.isCustomPagingEnabled) {
+                    Translation.Command_CustomPagingDisabled.sendMessage(sender);
                     return true;
                 }
                 boolean needsPage = !subcommand.equals("add");
@@ -133,33 +133,6 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
             if ("get".startsWith(args[0])) entries.add("get");
         }
         return entries;
-    }
-
-    private void simulateEditPage(Player player, Grimoire grimoire, int page) {
-        ItemStack book = new ItemStack(Material.WRITABLE_BOOK);
-        BookMeta bookMeta = (BookMeta) book.getItemMeta();
-        List<String> pages = new ArrayList<>();
-        pages.add("Editable content here...\n\n\n\n\n\n\n\n\n\n\nLast row: Uneditable text");
-        bookMeta.setPages(pages);
-        bookMeta.setTitle("Custom Book");
-        bookMeta.setAuthor("Author");
-        bookMeta.setGeneration(BookMeta.Generation.TATTERED);
-        book.setItemMeta(bookMeta);
-
-        player.getInventory().addItem(book);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                int slot = player.getInventory().first(book);
-                ItemStack item = player.getInventory().getItem(slot);
-                if (slot != -1 && item != null) {
-                    if(item.getItemMeta() instanceof BookMeta bookMeta) {
-                        player.openBook(bookMeta);
-                        player.getInventory().remove(item);
-                    }
-                }
-            }
-        }.runTaskLater(Grimoires.getInstance(), 1L); // Delay by 1 tick to ensure inventory update
     }
 }
 

@@ -1,6 +1,7 @@
 package net.maksy.grimoires.modules.book_management;
 
 import net.maksy.grimoires.Grimoires;
+import net.maksy.grimoires.configuration.GrimoireDesignCfg;
 import net.maksy.grimoires.configuration.ModuleInstance;
 import net.maksy.grimoires.modules.book_management.publication.PublicationModule;
 import net.maksy.grimoires.modules.book_management.storage.BookStorageModule;
@@ -11,11 +12,13 @@ import java.util.List;
 
 public class BookManagementModule implements ModuleInstance {
 
+    private static GrimoireDesignCfg designCfg;
 
     private final List<ModuleInstance> modules = new ArrayList<>();
 
     @Override
     public void loadModule() {
+        designCfg = new GrimoireDesignCfg();
 
         /* Modules */
         registerModule(new PublicationModule());
@@ -41,5 +44,9 @@ public class BookManagementModule implements ModuleInstance {
     @Override
     public void registerModule(ModuleInstance module) {
         modules.add(module);
+    }
+
+    public static GrimoireDesignCfg getDesignCfg() {
+        return designCfg;
     }
 }
