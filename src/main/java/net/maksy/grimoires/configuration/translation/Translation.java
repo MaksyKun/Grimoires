@@ -19,6 +19,9 @@ public enum Translation {
     Command_InvalidPage("Command.InvalidPage"),
     Command_CustomPagingDisabled("Command.CustomPagingDisabled"),
     Command_Usage("Command.Usage"),
+    Command_NotHoldingBook("Command.NotHoldingBook"),
+    Command_PlayerNotFound("Command.PlayerNotFound"),
+    Command_BookGiven("Command.BookGiven"),
 
     Publication_BookPublished("Publication.BookPublished"),
     Publication_BookAlreadyPublished("Publication.BookAlreadyPublished"),

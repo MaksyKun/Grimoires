@@ -4,7 +4,10 @@ Command:
   GrimoireNotFound: "&cNo grimoire found with id &e%id%&c."
   InvalidPage: "&cPage &e%page% &cdoes not exist in this grimoire."
   CustomPagingDisabled: "&cCustom paging is currently disabled."
-  Usage: "&eUsage: &f/grimoire <show|read <id> <page>|edit <id> <page>|add <id>|delete <id> <page>|give-editor>"
+  Usage: "&eUsage: &f/grimoire <show|read <id> <page>|edit <id> <page>|add <id>|delete <id> <page>|give-editor|publish|get <player> <id>|decrypt <id> <page> <word>>"
+  NotHoldingBook: "&cYou must be holding a written book to publish."
+  PlayerNotFound: "&cPlayer &e%player% &cwas not found."
+  BookGiven: "&aGiven grimoire &e%title% &ato &e%player%&a."
 
 Publication:
   BookPublished: "&aYou have published your book &e%title% &afor &e%price%!"
