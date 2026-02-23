@@ -18,7 +18,26 @@ public class DecryptionProcess implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-    public static Map<UUID, DecryptionProcess> Decryptions = new TreeMap<>();
+
+    /** Maximum number of in-memory decryption sessions. Eldest entry is evicted automatically. */
+    private static final int MAX_CACHE_SIZE = 512;
+
+    public static Map<UUID, DecryptionProcess> Decryptions = new LinkedHashMap<>(MAX_CACHE_SIZE, 0.75f, false) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<UUID, DecryptionProcess> eldest) {
+            return size() > MAX_CACHE_SIZE;
+        }
+    };
+
+    /** Removes the cached {@link DecryptionProcess} for the given player UUID, if present. */
+    public static void remove(UUID playerUuid) {
+        Decryptions.remove(playerUuid);
+    }
+
+    /** Clears all cached decryption sessions (e.g. on module unload). */
+    public static void clearAll() {
+        Decryptions.clear();
+    }
 
     @Getter
     public final UUID uuid;
