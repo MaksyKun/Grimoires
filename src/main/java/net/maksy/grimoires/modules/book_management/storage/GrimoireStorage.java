@@ -25,6 +25,7 @@ public class GrimoireStorage implements Listener, GuiSession {
     private final HashMap<Inventory, HashMap<Integer, GrimoireStorage>> folderSlots = new HashMap<>();
     private final HashMap<Inventory, HashMap<Integer, Grimoire>> itemSlots = new HashMap<>();
 
+    private GrimoireStorage parentStorage = null;
     private boolean registered = false;
 
     public GrimoireStorage() {
@@ -124,6 +125,7 @@ public class GrimoireStorage implements Listener, GuiSession {
                 break;
             Genre entry = entries.get(i);
             invSlots.put(invDex, new GrimoireStorage(selectedUUID, entry));
+            invSlots.get(invDex).parentStorage = this;
             folderSlots.put(inv, invSlots);
             inv.setItem(invDex, BookStorageModule.getBookStorageCfg().getGenreIcon(entry));
         }
@@ -170,7 +172,11 @@ public class GrimoireStorage implements Listener, GuiSession {
         int size = inventories.size();
         switch (slot) {
             case 36 -> {
-
+                if (parentStorage != null) {
+                    parentStorage.open(player);
+                } else {
+                    player.closeInventory();
+                }
             }
             case 39 -> open(player, (size + invdex - 1) % size);
             case 41 -> open(player, (invdex + 1) % size);
