@@ -17,6 +17,7 @@ import net.maksy.grimoires.modules.book_management.storage.GenreCfg;
 import net.maksy.grimoires.configuration.sql.SQLManager;
 import net.maksy.grimoires.configuration.translation.TranslationConfig;
 import net.maksy.grimoires.hooks.HookManager;
+import net.maksy.grimoires.modules.GuiSessionManager;
 import net.maksy.grimoires.modules.mysteries.MysteryModule;
 import net.maksy.grimoires.modules.shelves.BookShelfModule;
 import org.bukkit.command.CommandExecutor;
@@ -67,6 +68,8 @@ public final class Grimoires extends JavaPlugin implements ModuleInstance {
         registerModule(new MysteryModule());
 
         loadSubModules();
+        /* Session manager – must be registered before any GUI can open */
+        GuiSessionManager.get();
         /* Commands */
         if(modules.size() > 0)
             registerCommand(new GrimoireCommand());

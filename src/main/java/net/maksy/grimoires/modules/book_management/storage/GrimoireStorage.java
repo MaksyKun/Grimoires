@@ -2,18 +2,21 @@ package net.maksy.grimoires.modules.book_management.storage;
 
 import net.kyori.adventure.text.Component;
 import net.maksy.grimoires.Grimoires;
+import net.maksy.grimoires.modules.GuiSession;
+import net.maksy.grimoires.modules.GuiSessionManager;
 import net.maksy.grimoires.utils.InventoryUT;
 import net.maksy.grimoires.utils.ItemUT;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
 import java.util.*;
 
-public class GrimoireStorage implements Listener {
+public class GrimoireStorage implements Listener, GuiSession {
     private UUID selectedUUID = null;
     private Genre selectedGenre = null;
 
@@ -22,10 +25,11 @@ public class GrimoireStorage implements Listener {
     private final HashMap<Inventory, HashMap<Integer, GrimoireStorage>> folderSlots = new HashMap<>();
     private final HashMap<Inventory, HashMap<Integer, Grimoire>> itemSlots = new HashMap<>();
 
+    private boolean registered = false;
+
     public GrimoireStorage() {
         this.mainDisplay = BookStorageModule.getBookStorageCfg().getTitle("");
         this.inventories = List.of(InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE));
-        Grimoires.registerListener(this);
         initialize();
     }
 
@@ -33,7 +37,6 @@ public class GrimoireStorage implements Listener {
         this.selectedUUID = uuid;
         this.mainDisplay = BookStorageModule.getBookStorageCfg().getTitle("");
         this.inventories = List.of(InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE));
-        Grimoires.registerListener(this);
         initialize();
     }
 
@@ -41,7 +44,6 @@ public class GrimoireStorage implements Listener {
         this.selectedGenre = genre;
         this.mainDisplay = BookStorageModule.getBookStorageCfg().getTitle(genre.getName());
         this.inventories = List.of(InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE));
-        Grimoires.registerListener(this);
         initialize();
     }
 
@@ -50,17 +52,38 @@ public class GrimoireStorage implements Listener {
         this.selectedGenre = genre;
         this.mainDisplay = BookStorageModule.getBookStorageCfg().getTitle(genre.getName());
         this.inventories = List.of(InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE));
-        Grimoires.registerListener(this);
         initialize();
     }
 
     public void open(Player player) {
+        if (!registered) {
+            Grimoires.registerListener(this);
+            registered = true;
+        }
         initialize();
         open(player, 0);
     }
 
     public void open(Player player, int page) {
-        player.openInventory(inventories.get(page) != null ? inventories.get(page) : inventories.get(page - 1));
+        Inventory inv = inventories.get(page) != null ? inventories.get(page) : inventories.get(page - 1);
+        GuiSessionManager.get().track(inv, this);
+        player.openInventory(inv);
+    }
+
+    @Override
+    public void close() {
+        HandlerList.unregisterAll(this);
+        registered = false;
+        GuiSessionManager.get().untrack(this);
+        // Close any nested child sessions that were opened
+        for (HashMap<Integer, GrimoireStorage> slots : folderSlots.values()) {
+            for (GrimoireStorage child : slots.values()) {
+                if (child.registered) child.close();
+            }
+        }
+        inventories = Collections.emptyList();
+        folderSlots.clear();
+        itemSlots.clear();
     }
 
     public void initialize() {

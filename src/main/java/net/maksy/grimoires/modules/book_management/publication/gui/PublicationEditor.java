@@ -4,6 +4,8 @@ import lombok.Getter;
 import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.configuration.translation.Replaceable;
 import net.maksy.grimoires.configuration.translation.Translation;
+import net.maksy.grimoires.modules.GuiSession;
+import net.maksy.grimoires.modules.GuiSessionManager;
 import net.maksy.grimoires.modules.book_management.publication.PublicationModule;
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
 import net.maksy.grimoires.modules.book_management.storage.GrimoireRegistry;
@@ -12,11 +14,12 @@ import net.maksy.grimoires.utils.ItemUT;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
-public class PublicationEditor implements Listener {
+public class PublicationEditor implements Listener, GuiSession {
 
     private final Inventory inventory;
     @Getter
@@ -27,13 +30,14 @@ public class PublicationEditor implements Listener {
     private final AuthorGui authors;
     private final GenreGui genres;
 
+    private boolean registered = false;
+
     public PublicationEditor(Player player, Grimoire grimoire) {
         this.player = player;
         this.grimoire = grimoire;
         this.authors = new AuthorGui(this, grimoire.getAuthors());
         this.genres = new GenreGui(this, grimoire.getGenres());
         this.inventory = Bukkit.createInventory(player, 9, PublicationModule.getPublicationCfg().getPublicationTitle());
-        Grimoires.registerListener(this);
     }
 
     private void initialize() {
@@ -49,8 +53,22 @@ public class PublicationEditor implements Listener {
     }
 
     public void open() {
+        if (!registered) {
+            Grimoires.registerListener(this);
+            registered = true;
+        }
+        GuiSessionManager.get().track(inventory, this);
         initialize();
         player.openInventory(inventory);
+    }
+
+    @Override
+    public void close() {
+        HandlerList.unregisterAll(this);
+        registered = false;
+        GuiSessionManager.get().untrack(this);
+        authors.close();
+        genres.close();
     }
 
     public void click(InventoryClickEvent event) {
