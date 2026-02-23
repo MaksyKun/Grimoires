@@ -152,13 +152,19 @@ public class GrimoireStorage implements Listener {
             case 39 -> open(player, (size + invdex - 1) % size);
             case 41 -> open(player, (invdex + 1) % size);
             default -> {
-                if (!folderSlots.isEmpty() && folderSlots.get(inventories.get(invdex)).get(slot) != null) {
-                    GrimoireStorage entry = folderSlots.get(inventories.get(invdex)).get(slot);
-                    entry.open(player);
+                if (!folderSlots.isEmpty()) {
+                    HashMap<Integer, GrimoireStorage> fSlots = folderSlots.get(inventories.get(invdex));
+                    if (fSlots != null && fSlots.get(slot) != null) {
+                        GrimoireStorage entry = fSlots.get(slot);
+                        entry.open(player);
+                    }
                 }
-                if (!itemSlots.isEmpty() && itemSlots.get(inventories.get(invdex)).get(slot) != null) {
-                    Grimoire entry = itemSlots.get(inventories.get(invdex)).get(slot);
-                    player.openBook(entry.getBook(player));
+                if (!itemSlots.isEmpty()) {
+                    HashMap<Integer, Grimoire> iSlots = itemSlots.get(inventories.get(invdex));
+                    if (iSlots != null && iSlots.get(slot) != null) {
+                        Grimoire entry = iSlots.get(slot);
+                        player.openBook(entry.getBook(player));
+                    }
                 }
             }
         }

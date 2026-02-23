@@ -138,9 +138,14 @@ public class Grimoire implements Serializable {
     public Book getBook(Player player) {
         Book.Builder book = Book.builder();
         book.title(ChatUT.hexComp(title));
-        String authorsString = authors.stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName()).reduce((a, b) -> a + ", " + b).orElse("");
+        String authorsString = authors.stream()
+                .map(uuid -> {
+                    String name = Bukkit.getOfflinePlayer(uuid).getName();
+                    return name != null ? name : uuid.toString();
+                })
+                .reduce((a, b) -> a + ", " + b).orElse("");
         book.author(ChatUT.hexComp(authorsString));
-        if(!MysteryModule.getEncryptionAlgorithm().enabled() || encryptionKeys.isEmpty()) {
+        if(!MysteryModule.getEncryptionAlgorithm().enabled() || encryptionKeys == null || encryptionKeys.isEmpty()) {
             book.pages(pages.stream().map(ChatUT::hexComp).toArray(Component[]::new));
         } else {
             AtomicInteger amount = new AtomicInteger();

@@ -31,7 +31,7 @@ public class GrimoireRegistry {
     }
 
     public static List<Grimoire> getGrimoires(Genre genre) {
-        return Registry.get(genre);
+        return Registry.getOrDefault(genre, new ArrayList<>());
     }
 
     public static List<Grimoire> getGrimoires(UUID author) {

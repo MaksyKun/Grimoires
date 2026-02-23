@@ -29,8 +29,11 @@ public class DecryptionProcess implements Serializable {
     public DecryptionProcess(Player player, Grimoire grimoire) {
         this.uuid = player.getUniqueId();
         this.grimoire = grimoire;
-        for(String key : grimoire.getEncryptionKeys()) {
-            decryption.add(Pair.of(key, false));
+        List<String> keys = grimoire.getEncryptionKeys();
+        if (keys != null) {
+            for(String key : keys) {
+                decryption.add(Pair.of(key, false));
+            }
         }
     }
 

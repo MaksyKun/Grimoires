@@ -28,9 +28,10 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0) {
+            if (!(sender instanceof Player player)) return true;
             // TODO help message
 
-            simulateEditPage((Player) sender, null, 0);
+            simulateEditPage(player, null, 0);
             return true;
         }
 
@@ -51,8 +52,13 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
                 }
             }
             case 3 -> {
-                int id = Integer.parseInt(args[1]);
-                int page = Integer.parseInt(args[2]);
+                int id, page;
+                try {
+                    id = Integer.parseInt(args[1]);
+                    page = Integer.parseInt(args[2]);
+                } catch (NumberFormatException e) {
+                    return true;
+                }
                 Grimoire grimoire = GrimoireRegistry.getGrimoire(id);
 
                 if (grimoire == null) {
