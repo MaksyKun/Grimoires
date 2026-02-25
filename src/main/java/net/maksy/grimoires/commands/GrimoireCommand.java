@@ -1,6 +1,7 @@
 package net.maksy.grimoires.commands;
 
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.configuration.GrimoireDesignCfg;
 import net.maksy.grimoires.configuration.Permissions;
 import net.maksy.grimoires.configuration.translation.Replaceable;
@@ -223,6 +224,14 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
                 }
                 process.decrypt(args[3]);
             }
+            case "reload" -> {
+                if (!Permissions.Admin_Reload.hasPermission(sender)) {
+                    Translation.Command_NoPermission.sendMessage(sender);
+                    return true;
+                }
+                Grimoires.reload();
+                Translation.Command_Reloaded.sendMessage(sender);
+            }
             default -> Translation.Command_Usage.sendMessage(sender);
         }
 
@@ -238,6 +247,7 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
             if ("show".startsWith(args[0])) entries.add("show");
             if ("store".startsWith(args[0])) entries.add("store");
             if ("get".startsWith(args[0])) entries.add("get");
+            if ("reload".startsWith(args[0])) entries.add("reload");
         }
         return entries;
     }

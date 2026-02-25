@@ -25,3 +25,6 @@ permissions:
   grimoires.admin.give-editor:
     description: Grants access to the give-editor command.
     default: op
+  grimoires.admin.reload:
+    description: Grants access to the reload command.
+    default: op

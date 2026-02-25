@@ -22,6 +22,7 @@ public enum Translation {
     Command_NotHoldingBook("Command.NotHoldingBook"),
     Command_PlayerNotFound("Command.PlayerNotFound"),
     Command_BookGiven("Command.BookGiven"),
+    Command_Reloaded("Command.Reloaded"),
 
     Publication_BookPublished("Publication.BookPublished"),
     Publication_BookAlreadyPublished("Publication.BookAlreadyPublished"),

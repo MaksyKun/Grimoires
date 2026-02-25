@@ -20,6 +20,11 @@ Storage:
         - "&7Published on: &a%date%"
       EditFormat: "&a✎ Shift + Left-Click to edit"
       DeleteFormat: "&4&lX &cShift + Right-Click to delete"
+    GoToStore:
+      Material: "GOLD_INGOT"
+      Title: "&6Visit Book Store"
+      Lore:
+        - "&7Browse and purchase books."
 
 
 # Opening a custom gui for books instead of the vanilla mechanic for chiseled bookshelves
@@ -81,3 +86,8 @@ Store:
         - "&7Replacement price: &e%price%"
         - " "
         - "&7&oClick to buy a replacement copy"
+    GoToLibrary:
+      Material: "BOOKSHELF"
+      Title: "&9Visit Library"
+      Lore:
+        - "&7Browse books you own."
