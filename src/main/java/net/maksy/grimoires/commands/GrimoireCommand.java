@@ -233,16 +233,11 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         List<String> entries = new ArrayList<>();
         if (args.length == 1) {
-            if ("read".startsWith(args[0])) entries.add("read");
-            if ("edit".startsWith(args[0])) entries.add("edit");
-            if ("add".startsWith(args[0])) entries.add("add");
-            if ("delete".startsWith(args[0])) entries.add("delete");
             if ("give-editor".startsWith(args[0])) entries.add("give-editor");
             if ("publish".startsWith(args[0])) entries.add("publish");
             if ("show".startsWith(args[0])) entries.add("show");
             if ("store".startsWith(args[0])) entries.add("store");
             if ("get".startsWith(args[0])) entries.add("get");
-            if ("decrypt".startsWith(args[0])) entries.add("decrypt");
         }
         return entries;
     }
