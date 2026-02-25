@@ -37,7 +37,11 @@ Store:
   # 'virtual' - player gets access to read the book in /grimoire show
   # 'physical' - player receives the book as an item in their inventory
   BuyType: virtual
+  # If true (physical mode only), only the original buyer can read a physical book item.
+  # Default false: anyone who receives the item can read it.
+  PhysicalBookRestricted: false
   DisplayTitle: "&8Book Store %name%"
+  RecoverTitle: "&8Recover Lost Books"
   Icons:
     Book:
       Material: "WRITTEN_BOOK"
@@ -63,3 +67,17 @@ Store:
         - "&aFree"
         - " "
         - "&7&oClick to read"
+    RecoverButton:
+      Material: "WRITABLE_BOOK"
+      Title: "&6Recover Lost Books"
+      Lore:
+        - "&7Re-purchase a replacement copy"
+        - "&7of a book you have already bought."
+    RecoverBook:
+      Material: "WRITTEN_BOOK"
+      Title: "&9%title%"
+      Lore:
+        - "&7Authors: &a%authors%"
+        - "&7Replacement price: &e%price%"
+        - " "
+        - "&7&oClick to buy a replacement copy"

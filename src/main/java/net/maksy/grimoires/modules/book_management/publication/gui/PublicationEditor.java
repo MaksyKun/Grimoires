@@ -6,6 +6,7 @@ import net.maksy.grimoires.configuration.translation.Replaceable;
 import net.maksy.grimoires.configuration.translation.Translation;
 import net.maksy.grimoires.modules.GuiSession;
 import net.maksy.grimoires.modules.GuiSessionManager;
+import net.maksy.grimoires.modules.api.events.BookPublishEvent;
 import net.maksy.grimoires.modules.book_management.publication.PublicationModule;
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
 import net.maksy.grimoires.modules.book_management.storage.GrimoireRegistry;
@@ -81,6 +82,10 @@ public class PublicationEditor implements Listener, GuiSession {
                 grimoire.setGenres(genres.getGenres());
                 if (GrimoireRegistry.pricing().transact(player, grimoire.getPages().size())) {
                     grimoire.setEncryptionKeys(DecryptionProcess.getKeysOfGrimoire(grimoire));
+                    // Fire the publish event – allow cancellation before saving
+                    BookPublishEvent publishEvent = new BookPublishEvent(player, grimoire);
+                    Bukkit.getPluginManager().callEvent(publishEvent);
+                    if (publishEvent.isCancelled()) return;
                     Grimoires.sql().books().addBook(grimoire);
                     GrimoireRegistry.updateRegistry();
                     player.closeInventory();

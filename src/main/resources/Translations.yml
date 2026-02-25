@@ -24,3 +24,5 @@ Store:
   BookBought: "&aYou purchased &e%title% &afor &e%price%$&a!"
   InsufficientFunds: "&cYou don't have enough money. This book costs &e%price%$&c."
   InventoryFull: "&cYour inventory is full! The book was dropped at your feet."
+  BookRetrieved: "&aYou retrieved a replacement copy of &e%title% &afor &e%price%$&a!"
+  NotAllowedToRead: "&cYou need to purchase this book before you can read it."

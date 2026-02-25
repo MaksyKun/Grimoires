@@ -8,6 +8,7 @@ import net.maksy.grimoires.hooks.HookType;
 import net.maksy.grimoires.hooks.VaultHook;
 import net.maksy.grimoires.modules.GuiSession;
 import net.maksy.grimoires.modules.GuiSessionManager;
+import net.maksy.grimoires.modules.api.events.BookBoughtEvent;
 import net.maksy.grimoires.modules.book_management.storage.BookStorageModule;
 import net.maksy.grimoires.modules.book_management.storage.Genre;
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
@@ -15,6 +16,7 @@ import net.maksy.grimoires.modules.book_management.storage.GrimoireRegistry;
 import net.maksy.grimoires.utils.InventoryUT;
 import net.maksy.grimoires.utils.ItemUT;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,11 +32,14 @@ import java.util.stream.Collectors;
 public class BookStoreStorage implements Listener, GuiSession {
 
     private Genre selectedGenre = null;
+    private Player viewingPlayer = null;
 
     private final Component mainDisplay;
     private List<Inventory> inventories;
     private final HashMap<Inventory, HashMap<Integer, BookStoreStorage>> folderSlots = new HashMap<>();
     private final HashMap<Inventory, HashMap<Integer, Grimoire>> itemSlots = new HashMap<>();
+    /** Slot 44 in the root genre view opens the rebuy section when physical mode is active. */
+    private final Set<Inventory> recoverButtonInventories = new HashSet<>();
 
     private BookStoreStorage parentStorage = null;
     private boolean registered = false;
@@ -57,6 +62,7 @@ public class BookStoreStorage implements Listener, GuiSession {
             Grimoires.registerListener(this);
             registered = true;
         }
+        this.viewingPlayer = player;
         initialize();
         open(player, 0);
     }
@@ -80,6 +86,7 @@ public class BookStoreStorage implements Listener, GuiSession {
         inventories = Collections.emptyList();
         folderSlots.clear();
         itemSlots.clear();
+        recoverButtonInventories.clear();
     }
 
     private void initialize() {
@@ -97,6 +104,7 @@ public class BookStoreStorage implements Listener, GuiSession {
                 .collect(Collectors.toList());
 
         folderSlots.clear();
+        recoverButtonInventories.clear();
         HashMap<Integer, BookStoreStorage> invSlots = new HashMap<>();
         List<Inventory> inventories = new ArrayList<>();
         Inventory inv = null;
@@ -118,8 +126,20 @@ public class BookStoreStorage implements Listener, GuiSession {
             folderSlots.put(inv, invSlots);
             inv.setItem(invDex, BookStorageModule.getBookStorageCfg().getGenreIcon(entry));
         }
-        inventories.add(inv == null ? InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE) : inv);
+        // Build the last inventory if not yet added
+        if (inv == null) {
+            inv = InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE);
+        }
+        inventories.add(inv);
         this.inventories = inventories;
+
+        // Add recover button at slot 44 on every genre-view page (physical mode only)
+        if ("physical".equalsIgnoreCase(BookStorageModule.getBookStorageCfg().getBuyType())) {
+            for (Inventory page : this.inventories) {
+                page.setItem(44, BookStorageModule.getBookStorageCfg().getRecoverButtonIcon());
+                recoverButtonInventories.add(page);
+            }
+        }
     }
 
     private void initializeBooks(Genre genre) {
@@ -186,6 +206,12 @@ public class BookStoreStorage implements Listener, GuiSession {
             }
             case 39 -> open(player, (size + invdex - 1) % size);
             case 41 -> open(player, (invdex + 1) % size);
+            case 44 -> {
+                // Recover button – only active in genre-view pages that have it
+                if (recoverButtonInventories.contains(event.getInventory())) {
+                    new BookRebuyStorage(player, this).open();
+                }
+            }
             default -> {
                 if (!folderSlots.isEmpty()) {
                     HashMap<Integer, BookStoreStorage> fSlots = folderSlots.get(inventories.get(invdex));
@@ -232,6 +258,12 @@ public class BookStoreStorage implements Listener, GuiSession {
                     new Replaceable("%price%", String.valueOf(price)));
             return;
         }
+
+        // Fire the buy event before charging – allow cancellation
+        BookBoughtEvent buyEvent = new BookBoughtEvent(player, grimoire, price);
+        Bukkit.getPluginManager().callEvent(buyEvent);
+        if (buyEvent.isCancelled()) return;
+
         eco.withdrawPlayer(player, price);
         Grimoires.sql().playerBooks().addBook(player.getUniqueId(), grimoire.getId());
         Translation.Store_BookBought.sendMessage(player,
