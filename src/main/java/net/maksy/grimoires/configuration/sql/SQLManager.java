@@ -21,11 +21,13 @@ public class SQLManager {
 
     private final BooksSQL booksSQL;
     private final MysteriesSQL mysteriesSQL;
+    private final PlayerBooksSQL playerBooksSQL;
 
     public SQLManager() {
         connect();
         booksSQL = new BooksSQL(dataSource);
         mysteriesSQL = new MysteriesSQL(dataSource);
+        playerBooksSQL = new PlayerBooksSQL(dataSource);
     }
 
     public void connect() {
@@ -91,5 +93,9 @@ public class SQLManager {
 
     public MysteriesSQL mysteries() {
         return mysteriesSQL;
+    }
+
+    public PlayerBooksSQL playerBooks() {
+        return playerBooksSQL;
     }
 }

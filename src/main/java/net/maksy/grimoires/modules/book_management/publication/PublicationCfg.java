@@ -12,9 +12,12 @@ import net.maksy.grimoires.utils.ChatUT;
 import net.maksy.grimoires.utils.ItemUT;
 import net.maksy.grimoires.utils.PersistentMetaData;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,6 +110,27 @@ public class PublicationCfg {
         return ItemUT.getItem(material, title, false, lore);
     }
 
+    public ItemStack getPublicationSellPriceIcon(Grimoire grimoire) {
+        Material material = Material.valueOf(config.getString("MainGui.Icons.SellPrice.Material", "GOLD_NUGGET").toUpperCase());
+        Component title = ChatUT.hexComp(config.getString("MainGui.Icons.SellPrice.Title", "&6Sell Price"));
+        List<Component> lore = new ArrayList<>();
+        for (String line : config.getStringList("MainGui.Icons.SellPrice.Lore"))
+            lore.add(ChatUT.hexComp(line)
+                    .replaceText(TextReplacementConfig.builder().match("%price%").replacement(Component.text(String.valueOf(grimoire.getSellPrice()))).build())
+                    .replaceText(TextReplacementConfig.builder().match("%increment%").replacement(Component.text(String.valueOf(getSellPriceClickIncrement()))).build())
+                    .replaceText(TextReplacementConfig.builder().match("%shift_increment%").replacement(Component.text(String.valueOf(getSellPriceShiftClickIncrement()))).build())
+            );
+        return ItemUT.getItem(material, title, false, lore);
+    }
+
+    public double getSellPriceClickIncrement() {
+        return config.getDouble("SellPriceSettings.ClickIncrement", 1);
+    }
+
+    public double getSellPriceShiftClickIncrement() {
+        return config.getDouble("SellPriceSettings.ShiftClickIncrement", 100);
+    }
+
     /* Sub gui for authors */
     public Component getAuthorsGuiTitle() {
         return ChatUT.hexComp(config.getString("SubGui.Authors.Title", "Authors"));
@@ -122,11 +146,24 @@ public class PublicationCfg {
     }
 
     public ItemStack getAuthorsGuiAuthorIcon(UUID uuid) {
+        return getAuthorsGuiAuthorIcon(uuid, false);
+    }
+
+    public ItemStack getAuthorsGuiAuthorIcon(UUID uuid, boolean selected) {
         Component title = ChatUT.hexComp(config.getString("SubGui.Authors.Icons.Author.Title", "&9Author").replace("%name%", ChatUT.getPlayerName(uuid)));
         List<Component> lore = new ArrayList<>();
         for (String line : config.getStringList("SubGui.Authors.Icons.Author.Lore"))
             lore.add(ChatUT.hexComp(line.replace("%name%", ChatUT.getPlayerName(uuid))));
-        return ItemUT.getSkull(uuid, title, lore);
+        ItemStack skull = ItemUT.getSkull(uuid, title, lore);
+        if (selected) {
+            skull.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+            ItemMeta meta = skull.getItemMeta();
+            if (meta != null) {
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                skull.setItemMeta(meta);
+            }
+        }
+        return skull;
     }
     /* Player Search Mechanic*/
     public PlayerSearchMechanic getPlayerSearchMechanic() {

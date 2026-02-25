@@ -6,7 +6,8 @@ import org.bukkit.entity.Player;
 public enum Permissions {
     Use_Grimoires("grimoires.use"),
     Admin_Edit("grimoires.admin.edit"),
-    Admin_GiveEditor("grimoires.admin.give-editor");
+    Admin_GiveEditor("grimoires.admin.give-editor"),
+    Admin_Reload("grimoires.admin.reload");
 
     private final String permission;
 

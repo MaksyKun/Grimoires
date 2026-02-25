@@ -22,6 +22,7 @@ public enum Translation {
     Command_NotHoldingBook("Command.NotHoldingBook"),
     Command_PlayerNotFound("Command.PlayerNotFound"),
     Command_BookGiven("Command.BookGiven"),
+    Command_Reloaded("Command.Reloaded"),
 
     Publication_BookPublished("Publication.BookPublished"),
     Publication_BookAlreadyPublished("Publication.BookAlreadyPublished"),
@@ -30,7 +31,13 @@ public enum Translation {
 
     Vault_ErrorPlayers("Vault.ErrorPlayers"),
     Vault_FreeFormat("Vault.FreeFormat"),
-    Vault_MoneyFormat("Vault.MoneyFormat");
+    Vault_MoneyFormat("Vault.MoneyFormat"),
+
+    Store_BookBought("Store.BookBought"),
+    Store_InsufficientFunds("Store.InsufficientFunds"),
+    Store_InventoryFull("Store.InventoryFull"),
+    Store_BookRetrieved("Store.BookRetrieved"),
+    Store_NotAllowedToRead("Store.NotAllowedToRead");
 
 
 

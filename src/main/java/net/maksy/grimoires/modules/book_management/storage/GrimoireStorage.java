@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.modules.GuiSession;
 import net.maksy.grimoires.modules.GuiSessionManager;
+import net.maksy.grimoires.modules.book_management.store.BookStoreStorage;
 import net.maksy.grimoires.utils.InventoryUT;
 import net.maksy.grimoires.utils.ItemUT;
 import org.bukkit.Material;
@@ -19,6 +20,7 @@ import java.util.*;
 public class GrimoireStorage implements Listener, GuiSession {
     private UUID selectedUUID = null;
     private Genre selectedGenre = null;
+    private Player viewingPlayer = null;
 
     private final Component mainDisplay;
     private List<Inventory> inventories;
@@ -61,6 +63,7 @@ public class GrimoireStorage implements Listener, GuiSession {
             Grimoires.registerListener(this);
             registered = true;
         }
+        this.viewingPlayer = player;
         initialize();
         open(player, 0);
     }
@@ -98,7 +101,17 @@ public class GrimoireStorage implements Listener, GuiSession {
             // Book view of specific genre
             initializeBooks(null, this.selectedGenre);
         } else {
-            // Genre view of all books
+            // Genre view of all books – filter empty genres for the viewing player
+            if (viewingPlayer != null) {
+                final Player fp = viewingPlayer;
+                genres = genres.stream()
+                        .filter(g -> {
+                            List<Grimoire> books = GrimoireRegistry.getGrimoires(g);
+                            return books.stream().anyMatch(b ->
+                                    b.isFree() || Grimoires.sql().playerBooks().hasBook(fp.getUniqueId(), b.getId()));
+                        })
+                        .collect(java.util.stream.Collectors.toList());
+            }
             initializeGenres(genres);
         }
     }
@@ -128,12 +141,29 @@ public class GrimoireStorage implements Listener, GuiSession {
             folderSlots.put(inv, invSlots);
             inv.setItem(invDex, BookStorageModule.getBookStorageCfg().getGenreIcon(entry));
         }
-        inventories.add(inv == null ? InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE) : inv);
+        if (inv == null) {
+            inv = InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE);
+        }
+        inventories.add(inv);
         this.inventories = inventories;
+
+        // Add "Visit Store" button at slot 43 on all genre-view pages
+        for (Inventory page : this.inventories) {
+            page.setItem(43, BookStorageModule.getBookStorageCfg().getGoToStoreIcon());
+        }
     }
 
     private void initializeBooks(UUID author, Genre genre) {
-        List<Grimoire> entries = author == null ? GrimoireRegistry.getGrimoires(genre) : GrimoireRegistry.getGrimoires(author, genre);
+        List<Grimoire> allEntries = author == null ? GrimoireRegistry.getGrimoires(genre) : GrimoireRegistry.getGrimoires(author, genre);
+        List<Grimoire> entries;
+        if (viewingPlayer != null) {
+            final Player fp = viewingPlayer;
+            entries = allEntries.stream()
+                    .filter(g -> g.isFree() || Grimoires.sql().playerBooks().hasBook(fp.getUniqueId(), g.getId()))
+                    .collect(java.util.stream.Collectors.toList());
+        } else {
+            entries = allEntries;
+        }
 
         itemSlots.clear();
         HashMap<Integer, Grimoire> invSlots = new HashMap<>();
@@ -179,6 +209,12 @@ public class GrimoireStorage implements Listener, GuiSession {
             }
             case 39 -> open(player, (size + invdex - 1) % size);
             case 41 -> open(player, (invdex + 1) % size);
+            case 43 -> {
+                // Navigate to the Book Store (only available on genre-view pages)
+                if (selectedGenre == null) {
+                    new BookStoreStorage().open(player);
+                }
+            }
             default -> {
                 if (!folderSlots.isEmpty()) {
                     HashMap<Integer, GrimoireStorage> fSlots = folderSlots.get(inventories.get(invdex));
