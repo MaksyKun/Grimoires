@@ -7,6 +7,7 @@ import net.maksy.grimoires.configuration.YamlParser;
 import net.maksy.grimoires.utils.ChatUT;
 import net.maksy.grimoires.utils.ItemUT;
 import org.bukkit.Material;
+import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.Instant;
@@ -63,5 +64,22 @@ public class BookStorageCfg {
                     .replaceText(TextReplacementConfig.builder().match("%date%").replacement(getDateTime(grimoire.getPublishedOn())).build())
             );
         return ItemUT.getItem(material, title, false, lore);
+    }
+
+    /* Chiseled Bookshelf Gui */
+    public boolean isChiseledBookshelfGuiEnabled() {
+        return config.getBoolean("ChiseledBookShelfGui.Enabled", true);
+    }
+
+    public Component getChiseledBookshelfGuiTitle() {
+        return ChatUT.hexComp(config.getString("ChiseledBookShelfGui.Title", "Books"));
+    }
+
+    public boolean requiresBookshelfSneaking() {
+        return config.getBoolean("ChiseledBookShelfGui.SneakingRequired", true);
+    }
+
+    public Action getBookshelfAction() {
+        return Action.valueOf(config.getString("ChiseledBookShelfGui.ActionRequired", "RIGHT_CLICK_BLOCK").toUpperCase());
     }
 }

@@ -53,23 +53,6 @@ public class Config {
         return config.getInt("SQL.Port");
     }
 
-    /* Chiseled Bookshelf Gui*/
-    public boolean isChiseledBookshelfGuiEnabled() {
-        return config.getBoolean("ChiseledBookShelfGui.Enabled", true);
-    }
-
-    public Component getChiseledBookshelfGuiTitle() {
-        return ChatUT.hexComp(config.getString("ChiseledBookShelfGui.Title", "Books"));
-    }
-
-    public boolean requiresBookshelfSneaking() {
-        return config.getBoolean("ChiseledBookShelfGui.SneakingRequired", true);
-    }
-
-    public Action getBookshelfAction() {
-        return Action.valueOf(config.getString("ChiseledBookShelfGui.Action", "RIGHT_CLICK_BLOCK").toUpperCase());
-    }
-
     /* Debug */
     public boolean isDebugEnabled() {
         return config.getBoolean("Debug", false);
