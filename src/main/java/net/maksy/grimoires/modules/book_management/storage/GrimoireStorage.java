@@ -81,12 +81,6 @@ public class GrimoireStorage implements Listener, GuiSession {
         HandlerList.unregisterAll(this);
         registered = false;
         GuiSessionManager.get().untrack(this);
-        // Close any nested child sessions that were opened
-        for (HashMap<Integer, GrimoireStorage> slots : folderSlots.values()) {
-            for (GrimoireStorage child : slots.values()) {
-                if (child.registered) child.close();
-            }
-        }
         inventories = Collections.emptyList();
         folderSlots.clear();
         itemSlots.clear();
