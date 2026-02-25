@@ -30,7 +30,11 @@ public enum Translation {
 
     Vault_ErrorPlayers("Vault.ErrorPlayers"),
     Vault_FreeFormat("Vault.FreeFormat"),
-    Vault_MoneyFormat("Vault.MoneyFormat");
+    Vault_MoneyFormat("Vault.MoneyFormat"),
+
+    Store_BookBought("Store.BookBought"),
+    Store_InsufficientFunds("Store.InsufficientFunds"),
+    Store_InventoryFull("Store.InventoryFull");
 
 
 

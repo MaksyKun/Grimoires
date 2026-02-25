@@ -9,6 +9,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.maksy.grimoires.commands.BookStoreCommand;
 import net.maksy.grimoires.commands.GrimoireCommand;
 import net.maksy.grimoires.configuration.Config;
 import net.maksy.grimoires.configuration.ModuleInstance;
@@ -71,8 +72,10 @@ public final class Grimoires extends JavaPlugin implements ModuleInstance {
         /* Session manager – must be registered before any GUI can open */
         GuiSessionManager.get();
         /* Commands */
-        if(modules.size() > 0)
+        if(modules.size() > 0) {
             registerCommand(new GrimoireCommand());
+            Objects.requireNonNull(instance.getCommand("bookstore")).setExecutor(new BookStoreCommand());
+        }
     }
 
     @Override

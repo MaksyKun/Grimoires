@@ -10,6 +10,7 @@ import net.maksy.grimoires.modules.book_management.publication.gui.PublicationEd
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
 import net.maksy.grimoires.modules.book_management.storage.GrimoireRegistry;
 import net.maksy.grimoires.modules.book_management.storage.GrimoireStorage;
+import net.maksy.grimoires.modules.book_management.store.BookStoreStorage;
 import net.maksy.grimoires.modules.mysteries.DecryptionProcess;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -49,6 +50,17 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 new GrimoireStorage().open(player);
+            }
+            case "store" -> {
+                if (!(sender instanceof Player player)) {
+                    Translation.Command_PlayerOnly.sendMessage(sender);
+                    return true;
+                }
+                if (!Permissions.Use_Grimoires.hasPermission(player)) {
+                    Translation.Command_NoPermission.sendMessage(sender);
+                    return true;
+                }
+                new BookStoreStorage().open(player);
             }
             case "give-editor" -> {
                 if (!(sender instanceof Player player)) {
@@ -228,6 +240,7 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
             if ("give-editor".startsWith(args[0])) entries.add("give-editor");
             if ("publish".startsWith(args[0])) entries.add("publish");
             if ("show".startsWith(args[0])) entries.add("show");
+            if ("store".startsWith(args[0])) entries.add("store");
             if ("get".startsWith(args[0])) entries.add("get");
             if ("decrypt".startsWith(args[0])) entries.add("decrypt");
         }

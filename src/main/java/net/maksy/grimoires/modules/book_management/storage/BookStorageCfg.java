@@ -66,6 +66,43 @@ public class BookStorageCfg {
         return ItemUT.getItem(material, title, false, lore);
     }
 
+    /* Book Store */
+    public String getBuyType() {
+        return config.getString("Store.BuyType", "virtual").toLowerCase();
+    }
+
+    public Component getStoreTitle(String folder) {
+        return ChatUT.hexComp(config.getString("Store.DisplayTitle", "Book Store %name%").replace("%name%", folder));
+    }
+
+    public ItemStack getStoreBookIcon(Grimoire grimoire) {
+        boolean free = grimoire.isFree();
+        String section = free ? "Store.Icons.FreeBook" : "Store.Icons.Book";
+        String priceText = free ? "Free" : grimoire.getSellPrice() + "$";
+        Material material = Material.valueOf(config.getString(section + ".Material", "WRITTEN_BOOK").toUpperCase());
+        Component title = ChatUT.hexComp(config.getString(section + ".Title", "&9%title%").replace("%title%", grimoire.getTitle()));
+        List<Component> lore = new ArrayList<>();
+        for (String line : config.getStringList(section + ".Lore"))
+            lore.add(ChatUT.hexComp(line)
+                    .replaceText(TextReplacementConfig.builder().match("%title%").replacement(Component.text(grimoire.getTitle())).build())
+                    .replaceText(TextReplacementConfig.builder().match("%authors%").replacement(grimoire.getAuthorsComponent()).build())
+                    .replaceText(TextReplacementConfig.builder().match("%price%").replacement(Component.text(priceText)).build())
+            );
+        return ItemUT.getItem(material, title, false, lore);
+    }
+
+    public ItemStack getStoreOwnedBookIcon(Grimoire grimoire) {
+        Material material = Material.valueOf(config.getString("Store.Icons.OwnedBook.Material", "WRITTEN_BOOK").toUpperCase());
+        Component title = ChatUT.hexComp(config.getString("Store.Icons.OwnedBook.Title", "&9%title%").replace("%title%", grimoire.getTitle()));
+        List<Component> lore = new ArrayList<>();
+        for (String line : config.getStringList("Store.Icons.OwnedBook.Lore"))
+            lore.add(ChatUT.hexComp(line)
+                    .replaceText(TextReplacementConfig.builder().match("%title%").replacement(Component.text(grimoire.getTitle())).build())
+                    .replaceText(TextReplacementConfig.builder().match("%authors%").replacement(grimoire.getAuthorsComponent()).build())
+            );
+        return ItemUT.getItem(material, title, true, lore);
+    }
+
     /* Chiseled Bookshelf Gui */
     public boolean isChiseledBookshelfGuiEnabled() {
         return config.getBoolean("ChiseledBookShelfGui.Enabled", true);

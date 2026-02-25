@@ -19,6 +19,7 @@ import java.util.*;
 public class GrimoireStorage implements Listener, GuiSession {
     private UUID selectedUUID = null;
     private Genre selectedGenre = null;
+    private Player viewingPlayer = null;
 
     private final Component mainDisplay;
     private List<Inventory> inventories;
@@ -61,6 +62,7 @@ public class GrimoireStorage implements Listener, GuiSession {
             Grimoires.registerListener(this);
             registered = true;
         }
+        this.viewingPlayer = player;
         initialize();
         open(player, 0);
     }
@@ -98,7 +100,17 @@ public class GrimoireStorage implements Listener, GuiSession {
             // Book view of specific genre
             initializeBooks(null, this.selectedGenre);
         } else {
-            // Genre view of all books
+            // Genre view of all books – filter empty genres for the viewing player
+            if (viewingPlayer != null) {
+                final Player fp = viewingPlayer;
+                genres = genres.stream()
+                        .filter(g -> {
+                            List<Grimoire> books = GrimoireRegistry.getGrimoires(g);
+                            return books.stream().anyMatch(b ->
+                                    b.isFree() || Grimoires.sql().playerBooks().hasBook(fp.getUniqueId(), b.getId()));
+                        })
+                        .collect(java.util.stream.Collectors.toList());
+            }
             initializeGenres(genres);
         }
     }
@@ -133,7 +145,16 @@ public class GrimoireStorage implements Listener, GuiSession {
     }
 
     private void initializeBooks(UUID author, Genre genre) {
-        List<Grimoire> entries = author == null ? GrimoireRegistry.getGrimoires(genre) : GrimoireRegistry.getGrimoires(author, genre);
+        List<Grimoire> allEntries = author == null ? GrimoireRegistry.getGrimoires(genre) : GrimoireRegistry.getGrimoires(author, genre);
+        List<Grimoire> entries;
+        if (viewingPlayer != null) {
+            final Player fp = viewingPlayer;
+            entries = allEntries.stream()
+                    .filter(g -> g.isFree() || Grimoires.sql().playerBooks().hasBook(fp.getUniqueId(), g.getId()))
+                    .collect(java.util.stream.Collectors.toList());
+        } else {
+            entries = allEntries;
+        }
 
         itemSlots.clear();
         HashMap<Integer, Grimoire> invSlots = new HashMap<>();

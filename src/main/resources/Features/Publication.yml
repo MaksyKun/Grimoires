@@ -23,6 +23,16 @@ MainGui:
       Lore:
         - "&7Publication costs: &a%price%"
         - "&7&oClick here to publish your book"
+    SellPrice:
+      Material: "GOLD_NUGGET"
+      Title: "&6Sell Price"
+      Lore:
+        - "&7Price buyers pay: &a%price%$"
+        - "&7Left-Click: &a+%increment%"
+        - "&7Right-Click: &c-%increment%"
+        - "&7Shift+Left: &a+%shift_increment%"
+        - "&7Shift+Right: &c-%shift_increment%"
+        - "&7&oSet to 0 for a free book"
     Authors:
       Material: "FEATHER"
       Title: "&9Authors"
@@ -33,6 +43,11 @@ MainGui:
       Title: "&9Genre"
       Lore:
         - "&7Manage the genres of this book"
+
+# Increment values for the sell price buttons in the publication GUI
+SellPriceSettings:
+  ClickIncrement: 1
+  ShiftClickIncrement: 100
 
 SubGui:
   Authors:

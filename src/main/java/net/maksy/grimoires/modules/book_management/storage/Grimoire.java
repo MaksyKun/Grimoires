@@ -36,6 +36,10 @@ public class Grimoire implements Serializable {
     private long publishedOn;
 
 
+    /* Sell price for the book store (0 = free) */
+    @Setter
+    private double sellPrice;
+
     /*  Variables for Mystery Features
         requires them to be enabled */
     @Setter
@@ -117,6 +121,14 @@ public class Grimoire implements Serializable {
 
     public Component getGenresComponent() {
         return ChatUT.hexComp(genres.stream().map(Genre::getName).reduce((a, b) -> a + ", " + b).orElse(""));
+    }
+
+    public double getSellPrice() {
+        return sellPrice;
+    }
+
+    public boolean isFree() {
+        return sellPrice <= 0;
     }
 
     public double getPublicationPrice() {

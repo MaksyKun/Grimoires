@@ -107,6 +107,27 @@ public class PublicationCfg {
         return ItemUT.getItem(material, title, false, lore);
     }
 
+    public ItemStack getPublicationSellPriceIcon(Grimoire grimoire) {
+        Material material = Material.valueOf(config.getString("MainGui.Icons.SellPrice.Material", "GOLD_NUGGET").toUpperCase());
+        Component title = ChatUT.hexComp(config.getString("MainGui.Icons.SellPrice.Title", "&6Sell Price"));
+        List<Component> lore = new ArrayList<>();
+        for (String line : config.getStringList("MainGui.Icons.SellPrice.Lore"))
+            lore.add(ChatUT.hexComp(line)
+                    .replaceText(TextReplacementConfig.builder().match("%price%").replacement(Component.text(String.valueOf(grimoire.getSellPrice()))).build())
+                    .replaceText(TextReplacementConfig.builder().match("%increment%").replacement(Component.text(String.valueOf(getSellPriceClickIncrement()))).build())
+                    .replaceText(TextReplacementConfig.builder().match("%shift_increment%").replacement(Component.text(String.valueOf(getSellPriceShiftClickIncrement()))).build())
+            );
+        return ItemUT.getItem(material, title, false, lore);
+    }
+
+    public double getSellPriceClickIncrement() {
+        return config.getDouble("SellPriceSettings.ClickIncrement", 1);
+    }
+
+    public double getSellPriceShiftClickIncrement() {
+        return config.getDouble("SellPriceSettings.ShiftClickIncrement", 100);
+    }
+
     /* Sub gui for authors */
     public Component getAuthorsGuiTitle() {
         return ChatUT.hexComp(config.getString("SubGui.Authors.Title", "Authors"));

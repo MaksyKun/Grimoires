@@ -45,7 +45,7 @@ public class PublicationEditor implements Listener, GuiSession {
         inventory.setItem(1, PublicationModule.getPublicationCfg().getPublicationBookIcon(grimoire));
         inventory.setItem(2, ItemUT.fillerItem);
         inventory.setItem(3, PublicationModule.getPublicationCfg().getPublicationPricingIcon(grimoire));
-        inventory.setItem(4, ItemUT.fillerItem);
+        inventory.setItem(4, PublicationModule.getPublicationCfg().getPublicationSellPriceIcon(grimoire));
         inventory.setItem(5, PublicationModule.getPublicationCfg().getPublicationAuthorsIcon(grimoire));
         inventory.setItem(6, PublicationModule.getPublicationCfg().getPublicationGenresIcon(grimoire));
         inventory.setItem(7, ItemUT.fillerItem);
@@ -86,6 +86,17 @@ public class PublicationEditor implements Listener, GuiSession {
                     player.closeInventory();
                     Translation.Publication_BookPublished.sendMessage(player, new Replaceable("%title%", grimoire.getTitle()));
                 }
+            }
+            case 4 -> {
+                double increment = event.isShiftClick()
+                        ? PublicationModule.getPublicationCfg().getSellPriceShiftClickIncrement()
+                        : PublicationModule.getPublicationCfg().getSellPriceClickIncrement();
+                if (event.isRightClick()) {
+                    grimoire.setSellPrice(Math.max(0, grimoire.getSellPrice() - increment));
+                } else {
+                    grimoire.setSellPrice(grimoire.getSellPrice() + increment);
+                }
+                inventory.setItem(4, PublicationModule.getPublicationCfg().getPublicationSellPriceIcon(grimoire));
             }
             case 5 -> authors.open(player);
             case 6 -> genres.open(player);

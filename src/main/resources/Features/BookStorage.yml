@@ -31,3 +31,35 @@ ChiseledBookShelfGui:
   # Example - SneakingRequired: false -> Not sneaking opens the gui, sneaking takes the book out
   SneakingRequired: false
   ActionRequired: RIGHT_CLICK_BLOCK
+
+# Book Store configuration (/grimoire store & /bookstore)
+Store:
+  # 'virtual' - player gets access to read the book in /grimoire show
+  # 'physical' - player receives the book as an item in their inventory
+  BuyType: virtual
+  DisplayTitle: "&8Book Store %name%"
+  Icons:
+    Book:
+      Material: "WRITTEN_BOOK"
+      Title: "&9%title%"
+      Lore:
+        - "&7Authors: &a%authors%"
+        - "&7Price: &e%price%"
+        - " "
+        - "&7&oClick to purchase"
+    OwnedBook:
+      Material: "WRITTEN_BOOK"
+      Title: "&9%title%"
+      Lore:
+        - "&7Authors: &a%authors%"
+        - "&a&l✔ Already owned"
+        - " "
+        - "&7&oClick to read"
+    FreeBook:
+      Material: "WRITTEN_BOOK"
+      Title: "&9%title%"
+      Lore:
+        - "&7Authors: &a%authors%"
+        - "&aFree"
+        - " "
+        - "&7&oClick to read"

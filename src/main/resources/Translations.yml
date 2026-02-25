@@ -19,3 +19,8 @@ Vault:
   ErrorPlayers: "&cYour server cant process transactions at the moment. Please contact an administrator."
   FreeFormat: "&lFree"
   MoneyFormat: "&l%price%$"
+
+Store:
+  BookBought: "&aYou purchased &e%title% &afor &e%price%$&a!"
+  InsufficientFunds: "&cYou don't have enough money. This book costs &e%price%$&c."
+  InventoryFull: "&cYour inventory is full! The book was dropped at your feet."
