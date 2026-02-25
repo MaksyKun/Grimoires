@@ -66,6 +66,24 @@ public class BookStorageCfg {
         return ItemUT.getItem(material, title, false, lore);
     }
 
+    public ItemStack getGoToStoreIcon() {
+        Material material = Material.valueOf(config.getString("Storage.Icons.GoToStore.Material", "GOLD_INGOT").toUpperCase());
+        Component title = ChatUT.hexComp(config.getString("Storage.Icons.GoToStore.Title", "&6Visit Book Store"));
+        List<Component> lore = new ArrayList<>();
+        for (String line : config.getStringList("Storage.Icons.GoToStore.Lore"))
+            lore.add(ChatUT.hexComp(line));
+        return ItemUT.getItem(material, title, false, lore);
+    }
+
+    public ItemStack getGoToLibraryIcon() {
+        Material material = Material.valueOf(config.getString("Store.Icons.GoToLibrary.Material", "BOOKSHELF").toUpperCase());
+        Component title = ChatUT.hexComp(config.getString("Store.Icons.GoToLibrary.Title", "&9Visit Library"));
+        List<Component> lore = new ArrayList<>();
+        for (String line : config.getStringList("Store.Icons.GoToLibrary.Lore"))
+            lore.add(ChatUT.hexComp(line));
+        return ItemUT.getItem(material, title, false, lore);
+    }
+
     /* Book Store */
     public String getBuyType() {
         return config.getString("Store.BuyType", "virtual").toLowerCase();

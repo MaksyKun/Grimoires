@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.modules.GuiSession;
 import net.maksy.grimoires.modules.GuiSessionManager;
+import net.maksy.grimoires.modules.book_management.store.BookStoreStorage;
 import net.maksy.grimoires.utils.InventoryUT;
 import net.maksy.grimoires.utils.ItemUT;
 import org.bukkit.Material;
@@ -140,8 +141,16 @@ public class GrimoireStorage implements Listener, GuiSession {
             folderSlots.put(inv, invSlots);
             inv.setItem(invDex, BookStorageModule.getBookStorageCfg().getGenreIcon(entry));
         }
-        inventories.add(inv == null ? InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE) : inv);
+        if (inv == null) {
+            inv = InventoryUT.createFilledInventory(null, mainDisplay, 45, Material.GRAY_STAINED_GLASS_PANE);
+        }
+        inventories.add(inv);
         this.inventories = inventories;
+
+        // Add "Visit Store" button at slot 43 on all genre-view pages
+        for (Inventory page : this.inventories) {
+            page.setItem(43, BookStorageModule.getBookStorageCfg().getGoToStoreIcon());
+        }
     }
 
     private void initializeBooks(UUID author, Genre genre) {
@@ -200,6 +209,12 @@ public class GrimoireStorage implements Listener, GuiSession {
             }
             case 39 -> open(player, (size + invdex - 1) % size);
             case 41 -> open(player, (invdex + 1) % size);
+            case 43 -> {
+                // Navigate to the Book Store (only available on genre-view pages)
+                if (selectedGenre == null) {
+                    new BookStoreStorage().open(player);
+                }
+            }
             default -> {
                 if (!folderSlots.isEmpty()) {
                     HashMap<Integer, GrimoireStorage> fSlots = folderSlots.get(inventories.get(invdex));

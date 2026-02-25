@@ -13,6 +13,7 @@ import net.maksy.grimoires.modules.book_management.storage.BookStorageModule;
 import net.maksy.grimoires.modules.book_management.storage.Genre;
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
 import net.maksy.grimoires.modules.book_management.storage.GrimoireRegistry;
+import net.maksy.grimoires.modules.book_management.storage.GrimoireStorage;
 import net.maksy.grimoires.utils.InventoryUT;
 import net.maksy.grimoires.utils.ItemUT;
 import net.milkbowl.vault.economy.Economy;
@@ -140,6 +141,11 @@ public class BookStoreStorage implements Listener, GuiSession {
                 recoverButtonInventories.add(page);
             }
         }
+
+        // Add "Visit Library" button at slot 43 on all genre-view pages
+        for (Inventory page : this.inventories) {
+            page.setItem(43, BookStorageModule.getBookStorageCfg().getGoToLibraryIcon());
+        }
     }
 
     private void initializeBooks(Genre genre) {
@@ -206,6 +212,12 @@ public class BookStoreStorage implements Listener, GuiSession {
             }
             case 39 -> open(player, (size + invdex - 1) % size);
             case 41 -> open(player, (invdex + 1) % size);
+            case 43 -> {
+                // Navigate to the Library (only available on genre-view pages)
+                if (selectedGenre == null) {
+                    new GrimoireStorage().open(player);
+                }
+            }
             case 44 -> {
                 // Recover button – only active in genre-view pages that have it
                 if (recoverButtonInventories.contains(event.getInventory())) {
