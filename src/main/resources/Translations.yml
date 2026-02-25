@@ -8,6 +8,7 @@ Command:
   NotHoldingBook: "&cYou must be holding a written book to publish."
   PlayerNotFound: "&cPlayer &e%player% &cwas not found."
   BookGiven: "&aGiven grimoire &e%title% &ato &e%player%&a."
+  Reloaded: "&aAll configurations have been reloaded successfully."
 
 Publication:
   BookPublished: "&aYou have published your book &e%title% &afor &e%price%!"
