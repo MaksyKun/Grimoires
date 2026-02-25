@@ -1,6 +1,6 @@
 package net.maksy.grimoires.modules.shelves;
 
-import net.maksy.grimoires.Grimoires;
+import net.maksy.grimoires.modules.book_management.storage.BookStorageModule;
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
 import net.maksy.grimoires.modules.book_management.storage.GrimoireRegistry;
 import net.maksy.grimoires.utils.ChatUT;
@@ -19,16 +19,16 @@ public class BookViewer implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        if (!Grimoires.getConfiguration().isChiseledBookshelfGuiEnabled()) return;
+        if (!BookStorageModule.getBookStorageCfg().isChiseledBookshelfGuiEnabled()) return;
         ItemStack item = event.getItem();
 
         if (item == null || (item.getType() == Material.WRITTEN_BOOK || item.getType() == Material.WRITABLE_BOOK || item.getType() == Material.ENCHANTED_BOOK || item.getType() == Material.KNOWLEDGE_BOOK))
             return;
         Block block = event.getClickedBlock();
         if (block == null) return;
-        if (event.getAction() == Grimoires.getConfiguration().getBookshelfAction()) {
-            if ((Grimoires.getConfiguration().requiresBookshelfSneaking() && event.getPlayer().isSneaking())
-                    || (!Grimoires.getConfiguration().requiresBookshelfSneaking() && !event.getPlayer().isSneaking())) {
+        if (event.getAction() == BookStorageModule.getBookStorageCfg().getBookshelfAction()) {
+            if ((BookStorageModule.getBookStorageCfg().requiresBookshelfSneaking() && event.getPlayer().isSneaking())
+                    || (!BookStorageModule.getBookStorageCfg().requiresBookshelfSneaking() && !event.getPlayer().isSneaking())) {
                 if (block.getState() instanceof ChiseledBookshelf chiseledBookshelf) {
                     event.setCancelled(true);
                     new BookInventory(chiseledBookshelf).open(event.getPlayer());

@@ -3,6 +3,7 @@ package net.maksy.grimoires.modules.shelves;
 import net.maksy.grimoires.Grimoires;
 import net.maksy.grimoires.modules.GuiSession;
 import net.maksy.grimoires.modules.GuiSessionManager;
+import net.maksy.grimoires.modules.book_management.storage.BookStorageModule;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.ChiseledBookshelf;
@@ -22,7 +23,7 @@ public class BookInventory implements Listener, GuiSession {
     private boolean registered = false;
 
     public BookInventory(ChiseledBookshelf chiseledBookshelf) {
-        this.inventory = Bukkit.createInventory(null, 9, Grimoires.getConfiguration().getChiseledBookshelfGuiTitle());
+        this.inventory = Bukkit.createInventory(null, 9, BookStorageModule.getBookStorageCfg().getChiseledBookshelfGuiTitle());
         this.chiseledBookshelf = chiseledBookshelf;
         initialize();
     }
