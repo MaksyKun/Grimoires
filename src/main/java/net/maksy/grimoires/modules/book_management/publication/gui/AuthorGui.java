@@ -66,7 +66,11 @@ public class AuthorGui implements Listener, GuiSession {
 
     public void open(Player player, int page) {
         Inventory inv = inventories.get(page) != null ? inventories.get(page) : inventories.get(page - 1);
-        GuiSessionManager.get().track(inv, this);
+        // Track under the parent editor's session so GuiSessionManager treats navigation
+        // between the editor and this sub-GUI as part of the same session.  Without this,
+        // opening the sub-GUI would cause the editor's session to be detected as "left",
+        // triggering editor.close() → authors.close() → listener unregistered mid-use.
+        GuiSessionManager.get().track(inv, editor);
         player.openInventory(inv);
     }
 
@@ -74,7 +78,8 @@ public class AuthorGui implements Listener, GuiSession {
     public void close() {
         HandlerList.unregisterAll(this);
         registered = false;
-        GuiSessionManager.get().untrack(this);
+        // Do NOT call GuiSessionManager.untrack(this) – inventories are tracked under the
+        // editor's session and will be cleaned up when the editor's session closes.
         inventories = Collections.emptyList();
         slots.clear();
     }

@@ -19,14 +19,14 @@ was previously possible with books.
 
 
 ### Definition of Done (Initial Publication)
-- [ ] Players can open a chiseled-bookshelf and manage a gui with the books that are inside of it<br>
-- [ ] Players can publish books through a gui and set a price for it<br>
-- [ ] Players can add more than one author to a published book. Configurable<br>
-- [ ] Players can interact with the digital bookstore and buy books that are published<br>
-- [ ] Admins can toggle rather books are obtained virtually or physically<br>
-  - [ ] Physical: Books are obtained as items and need rebuying them if lost<br>
-  - [ ] Virtual: Books are obtained virtually and can be read everywhere at any time<br>
-- [ ] When virtual, players can see their personal book-storage and read them from there<br>
-- [ ] Full SQLite and MySQL/MariaDB support<br>
-- [ ] Full API for Grimoires (at least basic features)<br>
+- [x] Players can open a chiseled-bookshelf and manage a gui with the books that are inside of it<br>
+- [x] Players can publish books through a gui and set a price for it<br>
+- [x] Players can add more than one author to a published book. Configurable<br>
+- [x] Players can interact with the digital bookstore and buy books that are published (`/grimoire store` / `/bookstore`)<br>
+- [x] Admins can toggle whether books are obtained virtually or physically (`buyType: virtual|physical` in `BookStorage.yml`)<br>
+  - [x] Physical: Books are obtained as items and need rebuying them if lost (Recover Lost Books GUI in `/bookstore`)<br>
+  - [x] Virtual: Books are obtained virtually and can be read everywhere at any time<br>
+- [x] When virtual, players can see their personal book-storage and read them from there (`/grimoire show` filtered to owned/free books)<br>
+- [x] Full SQLite and MySQL/MariaDB support<br>
+- [x] Full API for Grimoires (at least basic features) — custom Bukkit events in `modules/api/events/`<br>
 
