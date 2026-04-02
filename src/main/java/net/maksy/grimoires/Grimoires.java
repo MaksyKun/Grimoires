@@ -9,11 +9,14 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.maksy.grimoires.commands.BookStoreCommand;
 import net.maksy.grimoires.commands.GrimoireCommand;
 import net.maksy.grimoires.configuration.Config;
 import net.maksy.grimoires.configuration.ModuleInstance;
+import net.maksy.grimoires.configuration.YamlParser;
 import net.maksy.grimoires.modules.book_management.BookManagementModule;
 import net.maksy.grimoires.modules.book_management.storage.GenreCfg;
+import net.maksy.grimoires.modules.book_management.storage.GrimoireRegistry;
 import net.maksy.grimoires.configuration.sql.SQLManager;
 import net.maksy.grimoires.configuration.translation.TranslationConfig;
 import net.maksy.grimoires.hooks.HookManager;
@@ -71,8 +74,10 @@ public final class Grimoires extends JavaPlugin implements ModuleInstance {
         /* Session manager – must be registered before any GUI can open */
         GuiSessionManager.get();
         /* Commands */
-        if(modules.size() > 0)
+        if(modules.size() > 0) {
             registerCommand(new GrimoireCommand());
+            Objects.requireNonNull(instance.getCommand("bookstore")).setExecutor(new BookStoreCommand());
+        }
     }
 
     @Override
@@ -103,6 +108,12 @@ public final class Grimoires extends JavaPlugin implements ModuleInstance {
 
     public static void consoleMessage(Component message) {
         instance.getServer().getConsoleSender().sendMessage(message);
+    }
+
+    public static void reload() {
+        YamlParser.reloadAll(true);
+        translations.setup();
+        GrimoireRegistry.updateRegistry();
     }
 
     public static Config getConfiguration() {

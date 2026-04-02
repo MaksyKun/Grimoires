@@ -66,6 +66,96 @@ public class BookStorageCfg {
         return ItemUT.getItem(material, title, false, lore);
     }
 
+    public ItemStack getGoToStoreIcon() {
+        Material material = Material.valueOf(config.getString("Storage.Icons.GoToStore.Material", "GOLD_INGOT").toUpperCase());
+        Component title = ChatUT.hexComp(config.getString("Storage.Icons.GoToStore.Title", "&6Visit Book Store"));
+        List<Component> lore = new ArrayList<>();
+        for (String line : config.getStringList("Storage.Icons.GoToStore.Lore"))
+            lore.add(ChatUT.hexComp(line));
+        return ItemUT.getItem(material, title, false, lore);
+    }
+
+    public ItemStack getGoToLibraryIcon() {
+        Material material = Material.valueOf(config.getString("Store.Icons.GoToLibrary.Material", "BOOKSHELF").toUpperCase());
+        Component title = ChatUT.hexComp(config.getString("Store.Icons.GoToLibrary.Title", "&9Visit Library"));
+        List<Component> lore = new ArrayList<>();
+        for (String line : config.getStringList("Store.Icons.GoToLibrary.Lore"))
+            lore.add(ChatUT.hexComp(line));
+        return ItemUT.getItem(material, title, false, lore);
+    }
+
+    /* Book Store */
+    public String getBuyType() {
+        return config.getString("Store.BuyType", "virtual").toLowerCase();
+    }
+
+    public boolean isPhysical() {
+        return "physical".equals(getBuyType());
+    }
+
+    public boolean isPhysicalBookRestricted() {
+        return config.getBoolean("Store.PhysicalBookRestricted", false);
+    }
+
+    public Component getStoreTitle(String folder) {
+        return ChatUT.hexComp(config.getString("Store.DisplayTitle", "Book Store %name%").replace("%name%", folder));
+    }
+
+    public Component getRecoverTitle() {
+        return ChatUT.hexComp(config.getString("Store.RecoverTitle", "Recover Lost Books"));
+    }
+
+    public ItemStack getStoreBookIcon(Grimoire grimoire) {
+        boolean free = grimoire.isFree();
+        String section = free ? "Store.Icons.FreeBook" : "Store.Icons.Book";
+        String priceText = free ? "Free" : grimoire.getSellPrice() + "$";
+        Material material = Material.valueOf(config.getString(section + ".Material", "WRITTEN_BOOK").toUpperCase());
+        Component title = ChatUT.hexComp(config.getString(section + ".Title", "&9%title%").replace("%title%", grimoire.getTitle()));
+        List<Component> lore = new ArrayList<>();
+        for (String line : config.getStringList(section + ".Lore"))
+            lore.add(ChatUT.hexComp(line)
+                    .replaceText(TextReplacementConfig.builder().match("%title%").replacement(Component.text(grimoire.getTitle())).build())
+                    .replaceText(TextReplacementConfig.builder().match("%authors%").replacement(grimoire.getAuthorsComponent()).build())
+                    .replaceText(TextReplacementConfig.builder().match("%price%").replacement(Component.text(priceText)).build())
+            );
+        return ItemUT.getItem(material, title, false, lore);
+    }
+
+    public ItemStack getStoreOwnedBookIcon(Grimoire grimoire) {
+        Material material = Material.valueOf(config.getString("Store.Icons.OwnedBook.Material", "WRITTEN_BOOK").toUpperCase());
+        Component title = ChatUT.hexComp(config.getString("Store.Icons.OwnedBook.Title", "&9%title%").replace("%title%", grimoire.getTitle()));
+        List<Component> lore = new ArrayList<>();
+        for (String line : config.getStringList("Store.Icons.OwnedBook.Lore"))
+            lore.add(ChatUT.hexComp(line)
+                    .replaceText(TextReplacementConfig.builder().match("%title%").replacement(Component.text(grimoire.getTitle())).build())
+                    .replaceText(TextReplacementConfig.builder().match("%authors%").replacement(grimoire.getAuthorsComponent()).build())
+            );
+        return ItemUT.getItem(material, title, true, lore);
+    }
+
+    public ItemStack getRecoverButtonIcon() {
+        Material material = Material.valueOf(config.getString("Store.Icons.RecoverButton.Material", "WRITABLE_BOOK").toUpperCase());
+        Component title = ChatUT.hexComp(config.getString("Store.Icons.RecoverButton.Title", "&6Recover Lost Books"));
+        List<Component> lore = new ArrayList<>();
+        for (String line : config.getStringList("Store.Icons.RecoverButton.Lore"))
+            lore.add(ChatUT.hexComp(line));
+        return ItemUT.getItem(material, title, false, lore);
+    }
+
+    public ItemStack getRecoverBookIcon(Grimoire grimoire) {
+        String priceText = grimoire.isFree() ? "Free" : grimoire.getSellPrice() + "$";
+        Material material = Material.valueOf(config.getString("Store.Icons.RecoverBook.Material", "WRITTEN_BOOK").toUpperCase());
+        Component title = ChatUT.hexComp(config.getString("Store.Icons.RecoverBook.Title", "&9%title%").replace("%title%", grimoire.getTitle()));
+        List<Component> lore = new ArrayList<>();
+        for (String line : config.getStringList("Store.Icons.RecoverBook.Lore"))
+            lore.add(ChatUT.hexComp(line)
+                    .replaceText(TextReplacementConfig.builder().match("%title%").replacement(Component.text(grimoire.getTitle())).build())
+                    .replaceText(TextReplacementConfig.builder().match("%authors%").replacement(grimoire.getAuthorsComponent()).build())
+                    .replaceText(TextReplacementConfig.builder().match("%price%").replacement(Component.text(priceText)).build())
+            );
+        return ItemUT.getItem(material, title, false, lore);
+    }
+
     /* Chiseled Bookshelf Gui */
     public boolean isChiseledBookshelfGuiEnabled() {
         return config.getBoolean("ChiseledBookShelfGui.Enabled", true);

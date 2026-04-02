@@ -20,6 +20,11 @@ Storage:
         - "&7Published on: &a%date%"
       EditFormat: "&a✎ Shift + Left-Click to edit"
       DeleteFormat: "&4&lX &cShift + Right-Click to delete"
+    GoToStore:
+      Material: "GOLD_INGOT"
+      Title: "&6Visit Book Store"
+      Lore:
+        - "&7Browse and purchase books."
 
 
 # Opening a custom gui for books instead of the vanilla mechanic for chiseled bookshelves
@@ -31,3 +36,58 @@ ChiseledBookShelfGui:
   # Example - SneakingRequired: false -> Not sneaking opens the gui, sneaking takes the book out
   SneakingRequired: false
   ActionRequired: RIGHT_CLICK_BLOCK
+
+# Book Store configuration (/grimoire store & /bookstore)
+Store:
+  # 'virtual' - player gets access to read the book in /grimoire show
+  # 'physical' - player receives the book as an item in their inventory
+  BuyType: virtual
+  # If true (physical mode only), only the original buyer can read a physical book item.
+  # Default false: anyone who receives the item can read it.
+  PhysicalBookRestricted: false
+  DisplayTitle: "&8Book Store %name%"
+  RecoverTitle: "&8Recover Lost Books"
+  Icons:
+    Book:
+      Material: "WRITTEN_BOOK"
+      Title: "&9%title%"
+      Lore:
+        - "&7Authors: &a%authors%"
+        - "&7Price: &e%price%"
+        - " "
+        - "&7&oClick to purchase"
+    OwnedBook:
+      Material: "WRITTEN_BOOK"
+      Title: "&9%title%"
+      Lore:
+        - "&7Authors: &a%authors%"
+        - "&a&l✔ Already owned"
+        - " "
+        - "&7&oClick to read"
+    FreeBook:
+      Material: "WRITTEN_BOOK"
+      Title: "&9%title%"
+      Lore:
+        - "&7Authors: &a%authors%"
+        - "&aFree"
+        - " "
+        - "&7&oClick to read"
+    RecoverButton:
+      Material: "WRITABLE_BOOK"
+      Title: "&6Recover Lost Books"
+      Lore:
+        - "&7Re-purchase a replacement copy"
+        - "&7of a book you have already bought."
+    RecoverBook:
+      Material: "WRITTEN_BOOK"
+      Title: "&9%title%"
+      Lore:
+        - "&7Authors: &a%authors%"
+        - "&7Replacement price: &e%price%"
+        - " "
+        - "&7&oClick to buy a replacement copy"
+    GoToLibrary:
+      Material: "BOOKSHELF"
+      Title: "&9Visit Library"
+      Lore:
+        - "&7Browse books you own."

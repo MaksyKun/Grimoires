@@ -6,6 +6,7 @@ import net.maksy.grimoires.configuration.translation.Replaceable;
 import net.maksy.grimoires.configuration.translation.Translation;
 import net.maksy.grimoires.modules.GuiSession;
 import net.maksy.grimoires.modules.GuiSessionManager;
+import net.maksy.grimoires.modules.api.events.BookPublishEvent;
 import net.maksy.grimoires.modules.book_management.publication.PublicationModule;
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
 import net.maksy.grimoires.modules.book_management.storage.GrimoireRegistry;
@@ -45,7 +46,7 @@ public class PublicationEditor implements Listener, GuiSession {
         inventory.setItem(1, PublicationModule.getPublicationCfg().getPublicationBookIcon(grimoire));
         inventory.setItem(2, ItemUT.fillerItem);
         inventory.setItem(3, PublicationModule.getPublicationCfg().getPublicationPricingIcon(grimoire));
-        inventory.setItem(4, ItemUT.fillerItem);
+        inventory.setItem(4, PublicationModule.getPublicationCfg().getPublicationSellPriceIcon(grimoire));
         inventory.setItem(5, PublicationModule.getPublicationCfg().getPublicationAuthorsIcon(grimoire));
         inventory.setItem(6, PublicationModule.getPublicationCfg().getPublicationGenresIcon(grimoire));
         inventory.setItem(7, ItemUT.fillerItem);
@@ -81,11 +82,26 @@ public class PublicationEditor implements Listener, GuiSession {
                 grimoire.setGenres(genres.getGenres());
                 if (GrimoireRegistry.pricing().transact(player, grimoire.getPages().size())) {
                     grimoire.setEncryptionKeys(DecryptionProcess.getKeysOfGrimoire(grimoire));
+                    // Fire the publish event – allow cancellation before saving
+                    BookPublishEvent publishEvent = new BookPublishEvent(player, grimoire);
+                    Bukkit.getPluginManager().callEvent(publishEvent);
+                    if (publishEvent.isCancelled()) return;
                     Grimoires.sql().books().addBook(grimoire);
                     GrimoireRegistry.updateRegistry();
                     player.closeInventory();
                     Translation.Publication_BookPublished.sendMessage(player, new Replaceable("%title%", grimoire.getTitle()));
                 }
+            }
+            case 4 -> {
+                double increment = event.isShiftClick()
+                        ? PublicationModule.getPublicationCfg().getSellPriceShiftClickIncrement()
+                        : PublicationModule.getPublicationCfg().getSellPriceClickIncrement();
+                if (event.isRightClick()) {
+                    grimoire.setSellPrice(Math.max(0, grimoire.getSellPrice() - increment));
+                } else {
+                    grimoire.setSellPrice(grimoire.getSellPrice() + increment);
+                }
+                inventory.setItem(4, PublicationModule.getPublicationCfg().getPublicationSellPriceIcon(grimoire));
             }
             case 5 -> authors.open(player);
             case 6 -> genres.open(player);
