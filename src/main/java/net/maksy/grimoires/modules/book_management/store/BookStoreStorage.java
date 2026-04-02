@@ -135,16 +135,18 @@ public class BookStoreStorage implements Listener, GuiSession {
         this.inventories = inventories;
 
         // Add recover button at slot 44 on every genre-view page (physical mode only)
-        if ("physical".equalsIgnoreCase(BookStorageModule.getBookStorageCfg().getBuyType())) {
+        if (BookStorageModule.getBookStorageCfg().isPhysical()) {
             for (Inventory page : this.inventories) {
                 page.setItem(44, BookStorageModule.getBookStorageCfg().getRecoverButtonIcon());
                 recoverButtonInventories.add(page);
             }
         }
 
-        // Add "Visit Library" button at slot 43 on all genre-view pages
-        for (Inventory page : this.inventories) {
-            page.setItem(43, BookStorageModule.getBookStorageCfg().getGoToLibraryIcon());
+        // Add "Visit Library" button at slot 43 on all genre-view pages (virtual mode only)
+        if (!BookStorageModule.getBookStorageCfg().isPhysical()) {
+            for (Inventory page : this.inventories) {
+                page.setItem(43, BookStorageModule.getBookStorageCfg().getGoToLibraryIcon());
+            }
         }
     }
 
@@ -286,8 +288,7 @@ public class BookStoreStorage implements Listener, GuiSession {
     }
 
     private void openOrGiveBook(Player player, Grimoire grimoire) {
-        String buyType = BookStorageModule.getBookStorageCfg().getBuyType();
-        if ("physical".equalsIgnoreCase(buyType)) {
+        if (BookStorageModule.getBookStorageCfg().isPhysical()) {
             Map<Integer, ItemStack> leftover = player.getInventory().addItem(grimoire.toItemStack());
             if (!leftover.isEmpty()) {
                 Translation.Store_InventoryFull.sendMessage(player);

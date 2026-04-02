@@ -89,6 +89,10 @@ public class BookStorageCfg {
         return config.getString("Store.BuyType", "virtual").toLowerCase();
     }
 
+    public boolean isPhysical() {
+        return "physical".equals(getBuyType());
+    }
+
     public boolean isPhysicalBookRestricted() {
         return config.getBoolean("Store.PhysicalBookRestricted", false);
     }

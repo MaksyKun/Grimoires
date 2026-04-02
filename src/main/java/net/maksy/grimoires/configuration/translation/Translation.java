@@ -37,7 +37,8 @@ public enum Translation {
     Store_InsufficientFunds("Store.InsufficientFunds"),
     Store_InventoryFull("Store.InventoryFull"),
     Store_BookRetrieved("Store.BookRetrieved"),
-    Store_NotAllowedToRead("Store.NotAllowedToRead");
+    Store_NotAllowedToRead("Store.NotAllowedToRead"),
+    Store_ShowNotAvailablePhysical("Store.ShowNotAvailablePhysical");
 
 
 

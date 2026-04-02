@@ -16,7 +16,7 @@ public class PlayerBooksSQL {
         this.dataSource = dataSource;
         try (Connection connection = dataSource.getConnection()) {
             connection.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE + "("
-                            + "PlayerUUID TEXT NOT NULL,"
+                            + "PlayerUUID VARCHAR(36) NOT NULL,"
                             + "BookId numeric NOT NULL,"
                             + "PRIMARY KEY (PlayerUUID, BookId));")
                     .execute();

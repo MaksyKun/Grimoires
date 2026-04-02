@@ -8,6 +8,7 @@ import net.maksy.grimoires.configuration.translation.Replaceable;
 import net.maksy.grimoires.configuration.translation.Translation;
 import net.maksy.grimoires.modules.book_management.BookManagementModule;
 import net.maksy.grimoires.modules.book_management.publication.gui.PublicationEditor;
+import net.maksy.grimoires.modules.book_management.storage.BookStorageModule;
 import net.maksy.grimoires.modules.book_management.storage.Grimoire;
 import net.maksy.grimoires.modules.book_management.storage.GrimoireRegistry;
 import net.maksy.grimoires.modules.book_management.storage.GrimoireStorage;
@@ -48,6 +49,10 @@ public class GrimoireCommand implements CommandExecutor, TabCompleter {
                 }
                 if (!Permissions.Use_Grimoires.hasPermission(player)) {
                     Translation.Command_NoPermission.sendMessage(sender);
+                    return true;
+                }
+                if (BookStorageModule.getBookStorageCfg().isPhysical()) {
+                    Translation.Store_ShowNotAvailablePhysical.sendMessage(player);
                     return true;
                 }
                 new GrimoireStorage().open(player);
