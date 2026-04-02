@@ -4,7 +4,7 @@
 <div align="center">
   <h1>✨ Get in contact ✨</h1>
   <p>
-    Join <strong>Cybernetic-Forge</strong>on Discord<br>
+    Join <strong>Cybernetic-Forge</strong> on Discord<br>
     for support and discussions!
   </p>
 
