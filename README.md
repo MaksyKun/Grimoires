@@ -1,6 +1,17 @@
 <p align="center">
   <img src="images/logo.png" />
 </p>
+<div align="center">
+  <h1>✨ Get in contact ✨</h1>
+  <p>
+    Join <strong>Cybernetic-Forge</strong>on Discord<br>
+    for support and discussions!
+  </p>
+
+  <a href="https://discord.gg/qewNHejdMT">
+    <img src="https://img.shields.io/badge/Join%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join Discord">
+  </a>
+</div>
 
 # Introduction into Grimoires
 **Grimoires** is a plugin that uses books with the aim of utilising their functionality to its limits.
@@ -29,4 +40,3 @@ was previously possible with books.
 - [x] When virtual, players can see their personal book-storage and read them from there (`/grimoire show` filtered to owned/free books)<br>
 - [x] Full SQLite and MySQL/MariaDB support<br>
 - [x] Full API for Grimoires (at least basic features) — custom Bukkit events in `modules/api/events/`<br>
-
